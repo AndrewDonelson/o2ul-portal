@@ -25,8 +25,8 @@ const CORE_ASSETS = [
   '/images/app/offline-image.svg',
   '/images/app/favicon-16x16.png',
   '/images/app/favicon-32x32.png',
-  '/images/app/android-chrome-192x192.png',
-  '/images/app/android-chrome-512x512.png',
+  '/images/app/O2UL-192.png',
+  '/images/app/O2UL-512.png',
   '/favicon.ico'
 ];
 

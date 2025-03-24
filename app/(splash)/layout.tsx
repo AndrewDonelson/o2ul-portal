@@ -36,9 +36,9 @@ export default function SplashPageLayout({
         <nav className="container flex w-full justify-between gap-6 text-lg font-medium md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="images/app/O2UL-128-min.png"
+              src="/images/app/O2UL-64.png"
               alt="Nlaak Studios"
-              width={150}
+              width={50}
               height={50}
               className="object-contain"
             />

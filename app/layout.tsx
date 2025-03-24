@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     "google-adsense-account": "ca-pub-7431399643348196"
   },  
   icons: {
-    icon: "/images/app/android-chrome-192x192.png",
+    icon: "/images/app/O2UL-192.png",
   },
 };
 

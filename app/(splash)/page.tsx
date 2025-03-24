@@ -15,6 +15,16 @@ import { ArrowRight, Coins, Shield, TrendingUp, Globe, Zap } from "lucide-react"
 export default function HomePage() {
   return (
     <div className="container mx-auto px-4 py-8 space-y-16">
+      
+      {/* Logo Image */}
+      <div className="flex justify-center mb-8">
+        <img 
+          src="/images/app/O2UL-512.png" 
+          alt="O²UL Logo" 
+          className="h-120 w-auto animate-fade-in"
+        />
+      </div>
+
       {/* Hero Section */}
       <Hero
         primaryText="O²UL: The Dawn of Truly Universal Currency"
