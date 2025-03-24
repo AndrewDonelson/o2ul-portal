@@ -11,7 +11,10 @@ import { Button } from "@/components/ui/button";
 import TagLine from "@/components/shared/TagLine";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Coins, Shield, TrendingUp, Globe, Zap } from "lucide-react";
+import { 
+  ArrowRight, Coins, Shield, TrendingUp, Globe, Zap, 
+  Layers, Lock, Database, Workflow, UserCheck 
+} from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -59,6 +62,96 @@ export default function HomePage() {
         </div>
       </ContentCard>
 
+      {/* Project Structure Section */}
+      <section className="space-y-8">
+        <h2 className="text-3xl font-bold text-center">Comprehensive Ecosystem Architecture</h2>
+        
+        <div className="grid md:grid-cols-3 gap-6">
+          <ContentCard
+            cardTitle="o2ul-proprietary"
+            align="left"
+            className="h-full"
+          >
+            <div className="space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <Lock className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              
+              <p>Private repository containing our core innovations:</p>
+              
+              <ul className="space-y-2 list-disc pl-5">
+                <li>Stability Core algorithms</li>
+                <li>AI-powered Oracle Module</li>
+                <li>Seigniorage Engine</li>
+                <li>Custom State Trie for historical data</li>
+              </ul>
+              
+              <p className="text-sm text-muted-foreground italic">
+                These proprietary modules form the foundation of our revolutionary stability mechanism.
+              </p>
+            </div>
+          </ContentCard>
+          
+          <ContentCard
+            cardTitle="o2ul-blockchain"
+            align="left"
+            className="h-full"
+          >
+            <div className="space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <Layers className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              
+              <p>Public Go-Ethereum fork with essential extensions:</p>
+              
+              <ul className="space-y-2 list-disc pl-5">
+                <li>EVM compatibility for seamless integration</li>
+                <li>Built-in token mechanism contracts</li>
+                <li>Modified PoS consensus mechanism</li>
+                <li>DBVerification contract for data integrity</li>
+                <li>Integration APIs for proprietary modules</li>
+              </ul>
+              
+              <p className="text-sm text-muted-foreground italic">
+                Built on Ethereum's battle-tested foundation with our specialized enhancements.
+              </p>
+            </div>
+          </ContentCard>
+          
+          <ContentCard
+            cardTitle="o2ul-portal"
+            align="left"
+            className="h-full"
+          >
+            <div className="space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <Globe className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              
+              <p>Comprehensive user interface with modern architecture:</p>
+              
+              <ul className="space-y-2 list-disc pl-5">
+                <li>Next.js framework for optimal performance</li>
+                <li>Convex + Convex-auth data management</li>
+                <li>Web3.js blockchain connectivity</li>
+                <li>TailwindCSS + ShadCN component library</li>
+                <li>Responsive design for all devices</li>
+              </ul>
+              
+              <p className="text-sm text-muted-foreground italic">
+                User-friendly interface connecting our powerful blockchain technology.
+              </p>
+            </div>
+          </ContentCard>
+        </div>
+      </section>
+
       {/* Dual Token System */}
       <section className="space-y-8">
         <h2 className="text-3xl font-bold text-center">The Dual-Token Advantage</h2>
@@ -74,19 +167,20 @@ export default function HomePage() {
             <div className="space-y-4">
               <p>
                 The O2V token follows Bitcoin&apos;s proven scarcity model with a maximum supply of just 21 million tokens. 
-                But unlike Bitcoin, O2V serves a critical function within the O²UL ecosystem:
+                But unlike Bitcoin, O2V serves critical functions within the O²UL ecosystem:
               </p>
               
               <ul className="space-y-2 list-disc pl-5">
                 <li>Acts as the system&apos;s store of value and volatility buffer</li>
                 <li>Provides governance rights over the entire protocol</li>
-                <li>Generates passive income through transaction fee sharing</li>
+                <li>Generates passive income through transaction fee sharing (0.25%)</li>
                 <li>Functions as a key component in the stability mechanism</li>
+                <li>Powers the seigniorage system during expansions and contractions</li>
               </ul>
               
               <p>
-                When staked, O2V holders receive 0.25% of all transaction fees—creating continuous income 
-                simply for participating in network security.
+                Governance rights enable voting on fee distribution, protocol upgrades, 
+                stability parameters, and oracle data sources through formal on-chain processes.
               </p>
               
               <div className="flex justify-end mt-4">
@@ -114,6 +208,7 @@ export default function HomePage() {
                 <li>Updates every 6 hours (4x daily) for exceptional responsiveness</li>
                 <li>Operates without collateral requirements through pure algorithmic design</li>
                 <li>Creates stability through advanced time-weighted averaging</li>
+                <li>Naturally hedges against regional economic fluctuations</li>
               </ul>
               
               <div className="flex justify-end mt-4">
@@ -132,8 +227,8 @@ export default function HomePage() {
           <div className="space-y-6">
             <p className="text-lg">
               The heart of O²UL&apos;s innovation lies in its approach to stability. The system gathers fiat value 
-              assessments across six continents, analyzing economic data through multiple AI services. This 
-              continental approach creates natural hedging against regional economic fluctuations.
+              assessments across six continents (North America, Europe, Asia, Africa, South America, Oceania), 
+              analyzing economic data through multiple AI services including Perplexity, Google, and Claude.
             </p>
             
             <div className="flex flex-col md:flex-row md:items-center gap-8">
@@ -142,9 +237,12 @@ export default function HomePage() {
                 <p>The system processes data across multiple timeframes:</p>
                 <ul className="space-y-2 list-disc pl-5 mt-2">
                   <li>Current values (real-time)</li>
-                  <li>Short-term trends (3-day to 1-week)</li>
-                  <li>Medium-term indicators (1-month to 3-month)</li>
-                  <li>Long-term economic patterns (6-month to 1-year)</li>
+                  <li>3-day (3-day average)</li>
+                  <li>1-week (7-day average)</li>
+                  <li>1-month (14-day average)</li>
+                  <li>3-month (30-day average)</li>
+                  <li>6-month (60-day average)</li>
+                  <li>1-year (90-day average)</li>
                 </ul>
               </div>
               
@@ -159,9 +257,8 @@ export default function HomePage() {
             </div>
             
             <p>
-              Each timeframe utilizes custom smoothing windows to dampen volatility while remaining responsive to 
-              genuine economic shifts. This creates a currency that&apos;s steady yet adaptive—providing the reliability 
-              of traditional money with the freedom of digital assets.
+              All smoothing calculations are performed by validator nodes with consensus required to establish new values,
+              resulting in extremely small and predictable price adjustments while remaining responsive to genuine economic shifts.
             </p>
           </div>
         </ContentCard>
@@ -173,7 +270,7 @@ export default function HomePage() {
         
         <ContentCard>
           <div className="space-y-4">
-            <p>When O2S deviates from its target value:</p>
+            <p>Our pure algorithmic design operates without collateralization through supply adjustments when O2S deviates from its target value:</p>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div className="border p-4 rounded-lg bg-green-500/10 hover:bg-green-500/20 transition-colors">
@@ -188,6 +285,7 @@ export default function HomePage() {
             </div>
             
             <p className="text-center pt-4">
+              The system includes circuit breakers to prevent extreme movements by limiting supply adjustments during periods of high volatility.
               This algorithmic dance between the two tokens creates a self-correcting system that 
               functions without external collateral—a breakthrough in digital currency design.
             </p>
@@ -195,7 +293,257 @@ export default function HomePage() {
         </ContentCard>
       </section>
       
-      {/* Technical Foundation */}
+      {/* User Management and Data Verification Section */}
+      <section className="space-y-8 pt-8">
+        <h2 className="text-3xl font-bold text-center">Advanced User Management & Data Integrity</h2>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          <ContentCard
+            cardTitle="Dual Authentication System"
+            align="left"
+            className="h-full"
+          >
+            <div className="space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <UserCheck className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              
+              <p>Our User Management System supports multiple authentication methods:</p>
+              
+              <ul className="space-y-2 list-disc pl-5">
+                <li>Traditional OAuth providers (Google, GitHub, etc.)</li>
+                <li>Web3 wallet integration (Metamask + others)</li>
+                <li>Secure JWT token management</li>
+                <li>Role-based access control</li>
+                <li>Cross-device authentication support</li>
+              </ul>
+              
+              <p>
+                Users can link both authentication methods to one account, providing flexibility without compromising security.
+              </p>
+            </div>
+          </ContentCard>
+          
+          <ContentCard
+            cardTitle="DBVerification Technology"
+            align="left"
+            className="h-full"
+          >
+            <div className="space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="p-3 rounded-full bg-primary/10">
+                  <Database className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              
+              <p>Our hybrid database-blockchain architecture ensures data integrity:</p>
+              
+              <ul className="space-y-2 list-disc pl-5">
+                <li>Cryptographic hashes of records stored on blockchain</li>
+                <li>Off-chain data storage efficiency with Convex DB</li>
+                <li>Tamper-evident profile data verification</li>
+                <li>Revision tracking for compliance and auditing</li>
+                <li>Gas-optimized batch operations for cost efficiency</li>
+              </ul>
+              
+              <p>
+                This provides the performance of traditional databases with the security guarantees of blockchain technology.
+              </p>
+            </div>
+          </ContentCard>
+        </div>
+      </section>
+      
+      {/* Fee Structure and Revenue */}
+      <section className="space-y-6">
+        <h2 className="text-3xl font-bold text-center">Competitive Fee Structure</h2>
+        
+        <ContentCard>
+          <div className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-semibold text-xl mb-4">Fee Framework</h3>
+                <ul className="space-y-3 list-disc pl-5">
+                  <li>0.5% flat fee on all transactions</li>
+                  <li>Minimum fee: $0.01 equivalent</li>
+                  <li>Minimum transaction size: $2.00</li>
+                  <li>No maximum cap - scales with transaction size</li>
+                  <li>50% (0.25%) to staked Value Token holders</li>
+                  <li>50% (0.25%) to protocol treasury</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-xl mb-4">Revenue Projections</h3>
+                <div className="space-y-3">
+                  <div className="p-3 border rounded-lg bg-muted/10">
+                    <p className="font-medium">Daily: $120.5 million</p>
+                    <p className="text-sm text-muted-foreground">(Based on USDT-like volume)</p>
+                  </div>
+                  
+                  <div className="p-3 border rounded-lg bg-muted/10">
+                    <p className="font-medium">Yearly: $43.98 billion</p>
+                  </div>
+                  
+                  <div className="p-3 border rounded-lg bg-muted/10">
+                    <p className="font-medium">5-Year: $204.13 billion</p>
+                    <p className="text-sm text-muted-foreground">(30% growth projection)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-primary/5 p-4 rounded-lg text-center mt-4">
+              <p className="font-medium">
+                Our 0.5% fee structure significantly undercuts traditional payment systems (2.5%+),
+                saving users $20 per $1,000 transaction compared to credit card processors while generating
+                substantial revenue for stakeholders.
+              </p>
+            </div>
+          </div>
+        </ContentCard>
+      </section>
+      
+      {/* Portal Features */}
+      <section className="space-y-8">
+        <h2 className="text-3xl font-bold text-center">Comprehensive Portal Features</h2>
+        
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ContentCard
+            cardTitle="Block Explorer"
+            className="h-full"
+          >
+            <ul className="space-y-2 list-disc pl-5">
+              <li>Real-time blockchain data</li>
+              <li>Detailed transaction history</li>
+              <li>Network statistics dashboard</li>
+              <li>Smart contract interaction</li>
+            </ul>
+          </ContentCard>
+          
+          <ContentCard
+            cardTitle="Integrated Wallet"
+            className="h-full"
+          >
+            <ul className="space-y-2 list-disc pl-5">
+              <li>Secure key management</li>
+              <li>Transaction creation/signing</li>
+              <li>Balance tracking interface</li>
+              <li>Value Token staking portal</li>
+            </ul>
+          </ContentCard>
+          
+          <ContentCard
+            cardTitle="Stablecoin Dashboard"
+            className="h-full"
+          >
+            <ul className="space-y-2 list-disc pl-5">
+              <li>Continental value visualization</li>
+              <li>AI source monitoring</li>
+              <li>Stability metrics tracking</li>
+              <li>Supply adjustment analytics</li>
+            </ul>
+          </ContentCard>
+          
+          <ContentCard
+            cardTitle="Node Operator Portal"
+            className="h-full"
+          >
+            <ul className="space-y-2 list-disc pl-5">
+              <li>Validator performance metrics</li>
+              <li>Oracle status monitoring</li>
+              <li>Network participation tools</li>
+              <li>Consensus verification stats</li>
+            </ul>
+          </ContentCard>
+        </div>
+      </section>
+      
+      {/* Development Roadmap */}
+      <section className="space-y-6">
+        <h2 className="text-3xl font-bold text-center">Development Roadmap</h2>
+        
+        <div className="space-y-4">
+          <div className="grid grid-cols-12 gap-4 items-center">
+            <div className="col-span-3 md:col-span-2 text-right font-medium">
+              Q3-Q4 2025
+            </div>
+            <div className="col-span-1 flex justify-center">
+              <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">1</div>
+            </div>
+            <div className="col-span-8 md:col-span-9">
+              <h3 className="font-semibold text-lg">Core Development</h3>
+              <p className="text-sm text-muted-foreground">
+                Establish proprietary stability mechanisms, fork Go-Ethereum, implement DBVerification contract, and develop integration points.
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-12 gap-4 items-center">
+            <div className="col-span-3 md:col-span-2 text-right font-medium">
+              Q4 2025-Q1 2026
+            </div>
+            <div className="col-span-1 flex justify-center">
+              <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">2</div>
+            </div>
+            <div className="col-span-8 md:col-span-9">
+              <h3 className="font-semibold text-lg">Portal Development</h3>
+              <p className="text-sm text-muted-foreground">
+                Build frontend interface, implement wallet functionality, create visualization dashboard, and develop dual-auth User Management.
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-12 gap-4 items-center">
+            <div className="col-span-3 md:col-span-2 text-right font-medium">
+              Q1-Q2 2026
+            </div>
+            <div className="col-span-1 flex justify-center">
+              <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">3</div>
+            </div>
+            <div className="col-span-8 md:col-span-9">
+              <h3 className="font-semibold text-lg">Testing and Optimization</h3>
+              <p className="text-sm text-muted-foreground">
+                Deploy extensive testnet, conduct security audits, optimize performance, and complete User Management integration testing.
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-12 gap-4 items-center">
+            <div className="col-span-3 md:col-span-2 text-right font-medium">
+              Q3 2026
+            </div>
+            <div className="col-span-1 flex justify-center">
+              <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">4</div>
+            </div>
+            <div className="col-span-8 md:col-span-9">
+              <h3 className="font-semibold text-lg">Mainnet Launch</h3>
+              <p className="text-sm text-muted-foreground">
+                Public launch of blockchain, initial token distribution, governance system establishment, and production-ready portal release.
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-12 gap-4 items-center">
+            <div className="col-span-3 md:col-span-2 text-right font-medium">
+              Q4 2026+
+            </div>
+            <div className="col-span-1 flex justify-center">
+              <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">5</div>
+            </div>
+            <div className="col-span-8 md:col-span-9">
+              <h3 className="font-semibold text-lg">Ecosystem Expansion</h3>
+              <p className="text-sm text-muted-foreground">
+                Third-party integrations, merchant adoption programs, enhanced oracle systems, and advanced enterprise verification capabilities.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Technical Foundation - Summary */}
       <section className="space-y-6">
         <h2 className="text-3xl font-bold text-center">The Technical Foundation</h2>
         
@@ -239,21 +587,14 @@ export default function HomePage() {
           <div className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
             <div className="flex justify-center mb-4">
               <div className="p-3 rounded-full bg-primary/10">
-                <Globe className="h-6 w-6 text-primary" />
+                <Workflow className="h-6 w-6 text-primary" />
               </div>
             </div>
-            <h3 className="font-semibold text-center mb-2">Smart Contracts</h3>
+            <h3 className="font-semibold text-center mb-2">Hybrid Architecture</h3>
             <p className="text-sm text-center text-muted-foreground">
-              Built-in contracts for core functionality and extensibility
+              Combining database efficiency with blockchain security
             </p>
           </div>
-        </div>
-        
-        <div className="bg-muted/20 p-6 rounded-lg text-center mt-6">
-          <p className="text-lg font-medium">
-            The elegant 0.5% flat fee structure generates substantial revenue while significantly undercutting 
-            traditional payment rails—saving users $20 per $1,000 transaction compared to credit card processors.
-          </p>
         </div>
       </section>
       
