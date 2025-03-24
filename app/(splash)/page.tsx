@@ -117,7 +117,7 @@ export default function HomePage() {
               </ul>
 
               <p className="text-sm text-muted-foreground italic">
-                Built on Ethereum's battle-tested foundation with our specialized enhancements.
+                Built on Ethereum&apos;s battle-tested foundation with our specialized enhancements.
               </p>
             </div>
           </ContentCard>
