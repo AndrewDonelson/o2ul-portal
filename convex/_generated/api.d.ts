@@ -27,7 +27,11 @@ import type * as notifications_nodeHandler from "../notifications/nodeHandler.js
 import type * as preferences_functions from "../preferences/functions.js";
 import type * as preferences_types from "../preferences/types.js";
 import type * as presence from "../presence.js";
-import type * as users from "../users.js";
+import type * as users_helpers from "../users/helpers.js";
+import type * as users_index from "../users/index.js";
+import type * as users_mutations from "../users/mutations.js";
+import type * as users_queries from "../users/queries.js";
+import type * as users_types from "../users/types.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -52,7 +56,11 @@ declare const fullApi: ApiFromModules<{
   "preferences/functions": typeof preferences_functions;
   "preferences/types": typeof preferences_types;
   presence: typeof presence;
-  users: typeof users;
+  "users/helpers": typeof users_helpers;
+  "users/index": typeof users_index;
+  "users/mutations": typeof users_mutations;
+  "users/queries": typeof users_queries;
+  "users/types": typeof users_types;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
