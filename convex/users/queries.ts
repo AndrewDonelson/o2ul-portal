@@ -369,30 +369,6 @@ export const getPlatformData = query({
   },
 });
 
-export const getPresence = query({
-  handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) return null;
-
-    // Get user's profile for online status
-    const profile = await ctx.db
-      .query("userProfiles")
-      .filter(q => q.eq(q.field("userId"), userId))
-      .first();
-
-    // Get the most recent presence status from memberships
-    const latestPresenceStatus = "offline";
-
-    return {
-      userId,
-      isOnline: profile?.isOnline ?? false,
-      lastSeen: profile?.lastSeen,
-      presenceStatus: latestPresenceStatus,
-      lastActive: profile?.lastSeen || Date.now()
-    };
-  },
-});
-
 export const getUserFiles = query({
   args: {
     contentType: v.optional(v.union(v.literal("image"), v.literal("audio")))

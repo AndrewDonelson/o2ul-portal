@@ -23,7 +23,7 @@ export function PresenceProvider({ children }: { children: ReactNode }) {
 
   // Query presence data when authenticated - this now uses userProfiles
   const presenceData = useQuery(
-    api.users.listUsersPresence,
+    api.users.index.listUsersPresence,
     isAuthenticated ? {} : "skip"
   );
 

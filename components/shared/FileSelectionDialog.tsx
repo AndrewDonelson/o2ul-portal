@@ -76,7 +76,7 @@ const FileSelectionDialog: React.FC<FileSelectionDialogProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("browse");
 
-  const files = useQuery(api.users.getUserFiles, { contentType });
+  const files = useQuery(api.users.index.getUserFiles, { contentType });
   const removeFile = useMutation(api.files.removeFile);
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const addFile = useMutation(api.files.addFile);

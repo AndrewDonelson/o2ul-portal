@@ -135,10 +135,10 @@ export default function Profile({ profileId, isOwner }: ProfileProps) {
     const router = useRouter();
     const [imageDialogOpen, setImageDialogOpen] = useState(false);
 
-    const updateProfile = useMutation(api.users.updateProfile);
-    const profile = useQuery(api.users.get, { userId: profileId });
-    const platformData = useQuery(api.users.getPlatformData, { platform: "github" });
-    const updateBgImage = useMutation(api.users.updateBackgroundImage);
+    const updateProfile = useMutation(api.users.index.updateProfile);
+    const profile = useQuery(api.users.index.get, { userId: profileId });
+    const platformData = useQuery(api.users.index.getPlatformData, { platform: "github" });
+    const updateBgImage = useMutation(api.users.index.updateBackgroundImage);
     const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
     if (!profile || !platformData) {
