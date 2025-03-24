@@ -12,8 +12,7 @@ const PRESENCE_TIMEOUT = 60000; // 1 minute
 export function usePresence() {
   const { isAuthenticated } = useConvexAuth();
   const updatePresence = useMutation(api.presence.updatePresence);
-  const globalPresence = useQuery(api.users.getPresence);
-
+  const globalPresence = useQuery(api.presence.getPresence);
   useEffect(() => {
     if (!isAuthenticated) return;
 

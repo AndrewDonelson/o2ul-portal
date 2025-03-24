@@ -22,7 +22,7 @@ export default function SplashPageLayout({
     
   // Always call useQuery, but conditionally use the result
   // This ensures consistent hook call order between renders
-  const viewerQuery = useQuery(api.users.viewer);
+  const viewerQuery = useQuery(api.users.index.viewer);
   // Don't use the query result if loading or not authenticated
   const viewer = isAuthenticated && !isLoading && viewerQuery ? viewerQuery : null;
 

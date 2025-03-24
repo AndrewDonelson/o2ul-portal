@@ -11,7 +11,7 @@ import { Id } from "@/convex/_generated/dataModel";
 
 export default function ProfilePage() {
   const params = useParams();
-  const viewer = useQuery(api.users.viewer);
+  const viewer = useQuery(api.users.index.viewer);
   const profileId = params.profileId as Id<"users">;
 
   return (

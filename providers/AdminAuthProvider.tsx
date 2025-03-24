@@ -82,11 +82,11 @@ import React, {
   // Provider component for admin authentication context
   export function AdminAuthProvider({ children }: { children: ReactNode }) {
     // Use the Convex helper functions instead of duplicating logic here
-    const viewer = useQuery(api.users.viewer);
-    const adminDetails = useQuery(api.users.getAdminDetails);
-    const isSysOpValue = useQuery(api.users.isSysOp);
-    const isModeratorValue = useQuery(api.users.isModerator);
-    const isFinancierValue = useQuery(api.users.isFinancier);
+    const viewer = useQuery(api.users.index.viewer);
+    const adminDetails = useQuery(api.users.index.getAdminDetails);
+    const isSysOpValue = useQuery(api.users.index.isSysOp);
+    const isModeratorValue = useQuery(api.users.index.isModerator);
+    const isFinancierValue = useQuery(api.users.index.isFinancier);
   
     const [contextValue, setContextValue] = useState<AdminAuthContextType>({
       isAdmin: false,

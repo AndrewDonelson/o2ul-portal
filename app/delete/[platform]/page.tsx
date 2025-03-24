@@ -24,12 +24,12 @@ export default function PlatformDataDeletion() {
 
   // Get platform-specific user data
   const userData = useQuery(
-    api.users.getPlatformData, 
+    api.users.index.getPlatformData, 
     isAuthenticated ? { platform: platform as string } : "skip"
   );
 
   // Delete mutation
-  const deletePlatformData = useMutation(api.users.deletePlatformData);
+  const deletePlatformData = useMutation(api.users.index.deletePlatformData);
 
   if (isLoading) {
     return (

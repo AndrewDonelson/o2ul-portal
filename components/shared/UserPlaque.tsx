@@ -61,7 +61,7 @@ export const UserPlaque = memo(function UserPlaqueComponent({
   lastSeen,
   onClick
 }: UserPlaqueProps) {
-  const user = useQuery(api.users.get, { userId });
+  const user = useQuery(api.users.index.get, { userId });
   //const presence = useUserPresence(userId);
   
   // Memorize presence status calculations

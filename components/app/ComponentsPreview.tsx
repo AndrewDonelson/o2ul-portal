@@ -41,7 +41,7 @@ const MOCK_USER_ID = "abc123" as unknown as Id<"users">;
 // UserPlaque Preview Component
 function UserPlaquePreview() {
   const { isAuthenticated } = useConvexAuth();
-  const user = useQuery(api.users.viewer);
+  const user = useQuery(api.users.index.viewer);
   
   if (!isAuthenticated || !user) {
     return (

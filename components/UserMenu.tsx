@@ -41,7 +41,7 @@ export function UserMenu({ children }: { children: ReactNode }) {
   const { isFullscreen, toggleFullscreen } = useFullscreen();
 
   const userData = useQuery(
-    api.users.viewer,
+    api.users.index.viewer,
     isAuthenticated ? {} : "skip"
   );
 
