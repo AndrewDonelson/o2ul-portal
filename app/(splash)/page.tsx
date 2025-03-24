@@ -1,4 +1,4 @@
-// file: /app/page.tsx
+// file: /app/(splash)/page.tsx
 // description: Home page component displaying O²UL project information
 // module: Client
 // License: MIT
@@ -10,6 +10,7 @@ import { ContentCard } from "@/components/shared/ContentCard";
 import { Button } from "@/components/ui/button";
 import TagLine from "@/components/shared/TagLine";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Coins, Shield, TrendingUp, Globe, Zap } from "lucide-react";
 
 export default function HomePage() {
@@ -18,10 +19,13 @@ export default function HomePage() {
       
       {/* Logo Image */}
       <div className="flex justify-center mb-8">
-        <img 
+        <Image 
           src="/images/app/O2UL-512.png" 
           alt="O²UL Logo" 
+          width={512}
+          height={512}
           className="h-120 w-auto animate-fade-in"
+          priority
         />
       </div>
 
@@ -36,7 +40,7 @@ export default function HomePage() {
       />
 
       {/* Tagline */}
-      <TagLine />
+      <TagLine className="mb-4" />
 
       {/* Introduction Card */}
       <ContentCard
@@ -47,8 +51,8 @@ export default function HomePage() {
       >
         <div className="prose dark:prose-invert mx-auto">
           <p className="text-lg">
-            O²UL (Orbis Omnira Unitas Lex) isn't just another cryptocurrency—it's the first global financial system 
-            designed for humanity's collective prosperity. By fusing blockchain innovation with cutting-edge AI analysis, 
+            O²UL (Orbis Omnira Unitas Lex) isn&apos;t just another cryptocurrency—it&apos;s the first global financial system 
+            designed for humanity&apos;s collective prosperity. By fusing blockchain innovation with cutting-edge AI analysis, 
             O²UL creates something unprecedented: a dual-token system combining the investment potential of Bitcoin 
             with stability that outperforms traditional financial instruments.
           </p>
@@ -69,12 +73,12 @@ export default function HomePage() {
           >
             <div className="space-y-4">
               <p>
-                The O2V token follows Bitcoin's proven scarcity model with a maximum supply of just 21 million tokens. 
+                The O2V token follows Bitcoin&apos;s proven scarcity model with a maximum supply of just 21 million tokens. 
                 But unlike Bitcoin, O2V serves a critical function within the O²UL ecosystem:
               </p>
               
               <ul className="space-y-2 list-disc pl-5">
-                <li>Acts as the system's store of value and volatility buffer</li>
+                <li>Acts as the system&apos;s store of value and volatility buffer</li>
                 <li>Provides governance rights over the entire protocol</li>
                 <li>Generates passive income through transaction fee sharing</li>
                 <li>Functions as a key component in the stability mechanism</li>
@@ -127,7 +131,7 @@ export default function HomePage() {
         <ContentCard className="bg-gradient-to-b from-muted/20 to-background">
           <div className="space-y-6">
             <p className="text-lg">
-              The heart of O²UL's innovation lies in its approach to stability. The system gathers fiat value 
+              The heart of O²UL&apos;s innovation lies in its approach to stability. The system gathers fiat value 
               assessments across six continents, analyzing economic data through multiple AI services. This 
               continental approach creates natural hedging against regional economic fluctuations.
             </p>
@@ -156,7 +160,7 @@ export default function HomePage() {
             
             <p>
               Each timeframe utilizes custom smoothing windows to dampen volatility while remaining responsive to 
-              genuine economic shifts. This creates a currency that's steady yet adaptive—providing the reliability 
+              genuine economic shifts. This creates a currency that&apos;s steady yet adaptive—providing the reliability 
               of traditional money with the freedom of digital assets.
             </p>
           </div>
@@ -255,13 +259,13 @@ export default function HomePage() {
       
       {/* Call to Action */}
       <section className="bg-gradient-to-br from-primary/5 to-muted/30 border rounded-xl p-8 text-center space-y-6">
-        <h2 className="text-3xl font-bold">A Currency for Humanity's Future</h2>
+        <h2 className="text-3xl font-bold">A Currency for Humanity&apos;s Future</h2>
         
         <div className="max-w-3xl mx-auto space-y-4">
           <p>
-            O²UL isn't just technology—it's a fundamental reimagining of what money can be. Not controlled by any 
-            single government or tied to any one economy, it's designed to serve humanity as a whole. The O2S token 
-            isn't just stable—it's responsive to global economic reality in a way no previous currency has achieved.
+            O²UL isn&apos;t just technology—it&apos;s a fundamental reimagining of what money can be. Not controlled by any 
+            single government or tied to any one economy, it&apos;s designed to serve humanity as a whole. The O2S token 
+            isn&apos;t just stable—it&apos;s responsive to global economic reality in a way no previous currency has achieved.
           </p>
           
           <p className="text-xl font-semibold mt-6">

@@ -21,7 +21,7 @@ export default function TagLine({ className }: TagLineProps) {
       <div className="flex items-center justify-center gap-2">
         <span className="text-xl animate-bounce">✨</span>
         <span className="text-sm text-muted-foreground font-medium animate-fade-in-up">
-          where AI meets blockchain for humanity's prosperity
+          where AI meets blockchain for humanity&apos;s prosperity
         </span>
         <span className="text-xl animate-bounce-left">✨</span>
       </div>
