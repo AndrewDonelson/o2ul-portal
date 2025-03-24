@@ -1,0 +1,311 @@
+// file: /public/offline.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're Offline - FOCH.ME</title>
+  <style>
+    /* Critical offline CSS */
+    :root {
+      --background: 255 255 255;
+      --foreground: 10 10 10;
+      --primary: 79 70 229;
+      --primary-foreground: 255 255 255;
+      --muted-foreground: 115 115 115;
+      --border: 226 232 240;
+      --card: 255 255 255;
+      --card-foreground: 10 10 10;
+      --destructive: 239 68 68;
+      --accent: 243 244 246;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: 10 10 10;
+        --foreground: 250 250 250;
+        --primary: 79 70 229;
+        --primary-foreground: 255 255 255;
+        --muted-foreground: 161 161 170;
+        --border: 39 39 42;
+        --card: 24 24 27;
+        --card-foreground: 250 250 250;
+        --destructive: 239 68 68;
+        --accent: 39 39 42;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background-color: rgb(var(--background));
+      color: rgb(var(--foreground));
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .flex {display: flex;}
+    .flex-col {flex-direction: column;}
+    .items-center {align-items: center;}
+    .justify-center {justify-content: center;}
+    .justify-between {justify-content: space-between;}
+    .min-h-screen {min-height: 100vh;}
+    .p-4 {padding: 1rem;}
+    .max-w-md {max-width: 28rem;}
+    .w-full {width: 100%;}
+    .space-y-12 > * + * {margin-top: 3rem;}
+    .space-y-4 > * + * {margin-top: 1rem;}
+    .text-center {text-align: center;}
+    .px-4 {padding-left: 1rem; padding-right: 1rem;}
+    .h-32 {height: 8rem;}
+    .w-32 {width: 8rem;}
+    .relative {position: relative;}
+    .absolute {position: absolute;}
+    .mx-auto {margin-left: auto; margin-right: auto;}
+    .rounded-full {border-radius: 9999px;}
+    .rounded-lg {border-radius: 0.5rem;}
+    .border {border-width: 1px; border-style: solid; border-color: rgb(var(--border));}
+    .font-bold {font-weight: 700;}
+    .text-4xl {font-size: 2.25rem;}
+    .text-lg {font-size: 1.125rem;}
+    .text-sm {font-size: 0.875rem;}
+    .text-xs {font-size: 0.75rem;}
+    .mt-4 {margin-top: 1rem;}
+    .mt-8 {margin-top: 2rem;}
+    .gap-2 {gap: 0.5rem;}
+    .p-6 {padding: 1.5rem;}
+    .bg-card {background-color: rgb(var(--card));}
+    .text-card-foreground {color: rgb(var(--card-foreground));}
+    .text-muted-foreground {color: rgb(var(--muted-foreground));}
+    .bg-primary {background-color: rgb(var(--primary));}
+    .text-primary-foreground {color: rgb(var(--primary-foreground));}
+    .bg-accent {background-color: rgb(var(--accent));}
+    .bg-destructive {background-color: rgb(var(--destructive));}
+    
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    
+    .button-primary {
+      background-color: rgb(var(--primary));
+      color: rgb(var(--primary-foreground));
+    }
+    
+    .button-outline {
+      background-color: transparent;
+      border: 1px solid rgb(var(--border));
+      color: rgb(var(--foreground));
+    }
+    
+    .button-lg {
+      font-size: 1rem;
+      padding: 0.625rem 1.25rem;
+    }
+    
+    .size-3 {height: 0.75rem; width: 0.75rem;}
+    .bottom-8 {bottom: 2rem;}
+    .left-0 {left: 0;}
+    .right-0 {right: 0;}
+    
+    @keyframes pulse {
+      0%, 100% {opacity: 1;}
+      50% {opacity: 0.5;}
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes spin {
+      from {transform: rotate(0deg);}
+      to {transform: rotate(360deg);}
+    }
+    
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+    
+    .icon-container {
+      background-color: rgba(var(--primary), 0.1);
+      border: 1px solid rgba(var(--primary), 0.2);
+      border-radius: 9999px;
+      padding: 1.5rem;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .text-primary {
+      color: rgb(var(--primary));
+    }
+    
+    .icon-wifi-off {
+      width: 48px;
+      height: 48px;
+    }
+    
+    .space-y-1 > * + * {
+      margin-top: 0.25rem;
+    }
+    
+    /* Add some basic animations */
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex flex-col items-center justify-center min-h-screen p-4">
+    <div class="max-w-md w-full space-y-12 text-center px-4">
+      <!-- Animated icon -->
+      <div class="relative flex justify-center">
+        <div class="icon-container fade-in">
+          <!-- WiFi Off Icon -->
+          <svg class="icon-wifi-off text-primary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+            <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+            <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+            <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="space-y-4 fade-in">
+        <h1 class="text-4xl font-bold">You're Offline</h1>
+        <p class="text-lg text-muted-foreground">
+          We couldn't connect to the internet. Check your connection and try again.
+        </p>
+      </div>
+
+      <!-- Status card -->
+      <div class="rounded-lg border bg-card p-4 text-card-foreground fade-in">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="size-3 rounded-full bg-destructive animate-pulse"></div>
+            <span class="text-sm">No connection detected</span>
+          </div>
+          <span class="text-xs text-muted-foreground" id="current-time">
+            <!-- Time will be inserted with JS -->
+          </span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="space-y-4 fade-in">
+        <a href="/" class="button button-primary button-lg w-full">
+          Try Again
+        </a>
+        
+        <a href="/" class="button button-outline button-lg w-full">
+          Go to Homepage
+        </a>
+      </div>
+
+      <!-- Last path display (will be populated by JavaScript if available) -->
+      <div id="last-path-container" class="text-sm text-muted-foreground mt-4" style="display: none;">
+        Last viewed: <span id="last-path" class="font-bold"></span>
+      </div>
+    </div>
+
+    <!-- PWA Install suggestion - only show if not installed -->
+    <div id="install-prompt" class="mt-8 max-w-md w-full px-4" style="display: none;">
+      <div class="rounded-lg bg-accent p-4 fade-in">
+        <h3 class="font-bold text-sm">Install our app</h3>
+        <p class="text-xs text-muted-foreground mt-2 mb-4">
+          Install our app to use it offline and get the best experience!
+        </p>
+        <a href="#" class="button button-outline w-full text-sm">
+          Install App
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer tips -->
+    <div class="absolute bottom-8 left-0 right-0">
+      <div class="max-w-md mx-auto px-4">
+        <div class="rounded-lg bg-accent p-4 fade-in">
+          <h3 class="font-bold text-sm">Tips to get back online:</h3>
+          <ul class="text-xs text-muted-foreground space-y-1 mt-2">
+            <li>• Check your Wi-Fi or mobile data connection</li>
+            <li>• Try airplane mode on and off</li>
+            <li>• Move to an area with better reception</li>
+            <li>• Restart your router if you're on Wi-Fi</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Set current time
+    document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
+    
+    // Check if app is installed
+    if (window.matchMedia('(display-mode: standalone)').matches ||
+        (navigator.standalone === true)) {
+      document.getElementById('install-prompt').style.display = 'none';
+    } else {
+      document.getElementById('install-prompt').style.display = 'block';
+    }
+    
+    // Try to get last path from session storage
+    try {
+      const lastPath = sessionStorage.getItem('lastPath');
+      if (lastPath && lastPath !== '/') {
+        document.getElementById('last-path').textContent = lastPath;
+        document.getElementById('last-path-container').style.display = 'block';
+      }
+    } catch (e) {
+      // Ignore storage errors
+    }
+    
+    // Periodically check connection and reload if online
+    setInterval(() => {
+      if (navigator.onLine) {
+        // Update time while checking
+        document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
+        
+        // Get last path or default to home
+        let redirectPath = '/';
+        try {
+          const lastPath = sessionStorage.getItem('lastPath');
+          if (lastPath) {
+            redirectPath = lastPath;
+          }
+        } catch (e) {
+          // Ignore storage errors
+        }
+        
+        // Redirect when back online
+        window.location.href = redirectPath;
+      }
+    }, 5000);
+  </script>
+</body>
+</html>

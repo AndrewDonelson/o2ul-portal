@@ -1,0 +1,46 @@
+
+:root  {
+    --background: 52 0% 95%;
+    --foreground: 52 0% 10%;
+    --card: 52 0% 90%;
+    --card-foreground: 52 0% 15%;
+    --popover: 52 0% 95%;
+    --popover-foreground: 52 95% 10%;
+    --primary: 52 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 52 10% 70%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 14 10% 85%;
+    --muted-foreground: 52 0% 40%;
+    --accent: 14 10% 80%;
+    --accent-foreground: 52 0% 15%;
+    --destructive: 0 50% 44%;
+    --destructive-foreground: 52 0% 90%;
+    --border: 52 20% 50%;
+    --input: 52 20% 44%;
+    --ring: 52 100% 50%;
+    --radius: 0.5rem;
+  }
+  .dark  {
+    --background: 52 10% 10%;
+    --foreground: 52 0% 90%;
+    --card: 52 0% 10%;
+    --card-foreground: 52 0% 90%;
+    --popover: 52 10% 5%;
+    --popover-foreground: 52 0% 90%;
+    --primary: 52 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 52 10% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 14 10% 25%;
+    --muted-foreground: 52 0% 60%;
+    --accent: 14 10% 25%;
+    --accent-foreground: 52 0% 90%;
+    --destructive: 0 50% 44%;
+    --destructive-foreground: 52 0% 90%;
+    --border: 52 20% 44%;
+    --input: 52 20% 44%;
+    --ring: 52 100% 50%;
+    --radius: 0.5rem;
+  }
+  

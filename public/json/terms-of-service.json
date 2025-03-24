@@ -1,0 +1,162 @@
+{
+    "title": "Terms of Service",
+    "lastUpdated": "2025-01-10",
+    "introduction": {
+      "heading": "Introduction",
+      "content": [
+        "Welcome to {APP_NAME} (\"the Platform\"). By accessing or using our services, you agree to these Terms of Service (\"Terms\"). Please read them carefully.",
+        "{APP_NAME} is a free speech platform that empowers users to create and participate in open discussions while maintaining personal responsibility for their actions and content."
+      ]
+    },
+    "sections": [
+      {
+        "id": "acceptance",
+        "heading": "Acceptance of Terms",
+        "content": [
+          "By using {APP_NAME}, you agree to:",
+          {
+            "type": "list",
+            "items": [
+              "Be at least 13 years of age",
+              "Comply with all applicable laws and regulations",
+              "Take responsibility for your actions and content",
+              "Accept our Privacy Policy"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "user-rights",
+        "heading": "User Rights and Freedom of Expression",
+        "content": [
+          "{APP_NAME} is committed to protecting free speech and expression. Users have the right to:",
+          {
+            "type": "list",
+            "items": [
+              "Express opinions and ideas freely",
+              "Create and manage channels according to their preferences",
+              "Engage in open discourse and debate",
+              "Share content within legal boundaries"
+            ]
+          },
+          "While we support free expression, users must not engage in:",
+          {
+            "type": "list",
+            "items": [
+              "Direct threats of violence or harm",
+              "Illegal activities or promotion thereof",
+              "Malicious harassment or stalking",
+              "Intentional spread of malware or harmful code"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "channel-ownership",
+        "heading": "Channel Ownership and Moderation",
+        "content": [
+          "Channel creators and moderators are solely responsible for:",
+          {
+            "type": "list",
+            "items": [
+              "Content posted within their channels",
+              "Moderation policies and enforcement",
+              "Member management and rules",
+              "Ensuring compliance with applicable laws"
+            ]
+          },
+          "{APP_NAME} does not moderate individual channels unless required by law."
+        ]
+      },
+      {
+        "id": "liability",
+        "heading": "Limitation of Liability",
+        "content": [
+          "{APP_NAME} is provided \"as is\" without any warranties. We explicitly disclaim responsibility for:",
+          {
+            "type": "list",
+            "items": [
+              "User-generated content and conversations",
+              "Actions taken by channel moderators",
+              "Disputes between users",
+              "Loss of data or service interruptions",
+              "Any consequential, incidental, or punitive damages"
+            ]
+          },
+          "Users access and use the platform at their own risk and discretion."
+        ]
+      },
+      {
+        "id": "content-ownership",
+        "heading": "Content Ownership",
+        "content": [
+          "Users retain ownership of their content while granting {APP_NAME} necessary rights to:",
+          {
+            "type": "list",
+            "items": [
+              "Display and distribute content within the platform",
+              "Store and process content for service operation",
+              "Modify content format for technical purposes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "termination",
+        "heading": "Account Termination",
+        "content": [
+          "{APP_NAME} reserves the right to terminate accounts that:",
+          {
+            "type": "list",
+            "items": [
+              "Engage in illegal activities",
+              "Make direct threats of violence",
+              "Deliberately spread malware",
+              "Violate applicable laws"
+            ]
+          },
+          "Account termination decisions are final and at {APP_NAME}'s sole discretion."
+        ]
+      },
+      {
+        "id": "modifications",
+        "heading": "Modifications to Terms",
+        "content": [
+          "{APP_NAME} may modify these terms at any time. Continued use of the platform constitutes acceptance of modified terms.",
+          "Users will be notified of significant changes through the platform."
+        ]
+      },
+      {
+        "id": "indemnification",
+        "heading": "Indemnification",
+        "content": [
+          "Users agree to indemnify and hold harmless {APP_NAME}, its operators, and affiliates from:",
+          {
+            "type": "list",
+            "items": [
+              "Claims arising from user content or actions",
+              "Violations of these Terms",
+              "Disputes with other users",
+              "Legal fees and costs related to user activities"
+            ]
+          }
+        ]
+      }
+    ],
+    "contact": {
+      "heading": "Contact Information",
+      "content": [
+        "For legal inquiries regarding these Terms, contact us at:",
+        {
+          "type": "contact",
+          "email": "{APP_EMAIL_LEGAL}",
+          "website": "{APP_URL}"
+        }
+      ]
+    },
+    "footer": {
+      "text": "These Terms of Service are effective as of January 10, 2025 and supersede all previous versions.",
+      "company": "{APP_NAME}",
+      "rights": "All rights reserved."
+    }
+  }

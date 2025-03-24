@@ -1,0 +1,126 @@
+{
+    "title": "Privacy Policy",
+    "lastUpdated": "2025-01-10",
+    "introduction": {
+      "heading": "Introduction",
+      "content": [
+        "At {APP_NAME}, we take your privacy seriously. This Privacy Policy outlines our practices regarding the collection, use, and protection of your personal information when you use our service.",
+        "By using {APP_NAME}, you agree to the collection and use of information in accordance with this policy."
+      ]
+    },
+    "sections": [
+      {
+        "id": "information-collection",
+        "heading": "Information Collection",
+        "content": [
+          "We collect only the minimum information necessary to provide you with our service:",
+          {
+            "type": "list",
+            "items": [
+              "Authentication information when you sign in through third-party providers",
+              "Basic profile information (name, email) for account creation",
+              "Technical information necessary for the service to function"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "information-use",
+        "heading": "Use of Information",
+        "content": [
+          "Your information is used exclusively for:",
+          {
+            "type": "list",
+            "items": [
+              "Account authentication and security",
+              "Providing and maintaining our service",
+              "Communicating with you about service-related matters"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "data-protection",
+        "heading": "Data Protection",
+        "content": [
+          "We implement robust security measures to protect your personal information:",
+          {
+            "type": "list",
+            "items": [
+              "End-to-end encryption for sensitive data",
+              "Regular security audits and updates",
+              "Strict access controls and authentication protocols"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "data-sharing",
+        "heading": "Data Sharing",
+        "content": [
+          "We do not share your personal information with third parties.",
+          "We do not sell or rent your personal data to anyone.",
+          "Your information is only used for the purposes explicitly stated in this policy."
+        ]
+      },
+      {
+        "id": "data-retention",
+        "heading": "Data Retention",
+        "content": [
+          "We retain your information only as long as necessary to provide you with our service.",
+          "You can request deletion of your account and associated data at any time.",
+          "Upon account deletion, we will remove all personal information from our systems within 30 days."
+        ]
+      },
+      {
+        "id": "user-rights",
+        "heading": "Your Rights",
+        "content": [
+          "You have the following rights regarding your personal information:",
+          {
+            "type": "list",
+            "items": [
+              "Right to access your personal information",
+              "Right to request correction of inaccurate data",
+              "Right to request deletion of your data",
+              "Right to withdraw consent for data processing"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cookies",
+        "heading": "Cookies and Tracking",
+        "content": [
+          "We use only essential cookies necessary for the service to function properly.",
+          "We do not use tracking cookies or analytics that collect personal information.",
+          "You can control cookie settings through your browser preferences."
+        ]
+      },
+      {
+        "id": "changes",
+        "heading": "Changes to This Policy",
+        "content": [
+          "We may update this Privacy Policy from time to time.",
+          "We will notify you of any changes by posting the new policy on this page.",
+          "Continued use of our service after changes constitutes acceptance of the updated policy."
+        ]
+      }
+    ],
+    "contact": {
+      "heading": "Contact Us",
+      "content": [
+        "If you have any questions about this Privacy Policy, please contact us at:",
+        {
+          "type": "contact",
+          "email": "{APP_EMAIL_PRIVACY}",
+          "website": "{APP_URL}"
+        }
+      ]
+    },
+    "footer": {
+      "text": "This privacy policy is effective as of January 10, 2025 and will remain in effect except with respect to any changes in its provisions in the future.",
+      "company": "{APP_NAME}",
+      "rights": "All rights reserved."
+    }
+  }
