@@ -2,9 +2,9 @@
 // feature: WebApp Core
 export const APP_NAME = 'Nlaak Studios WebApp Framework';
 export const APP_AUTHOR = 'Nlaak Studios, LLC';
-export const APP_COPYRIGHT_YEAR_FROM = 2024;
+export const APP_COPYRIGHT_YEAR_FROM = 2017;
 export const APP_DOMAIN = 'localhost';
-export const APP_VERSION = '2025.01.28.0740'; // TODO: Update this on every release
+export const APP_VERSION = '2025.03.24.0626'; // TODO: Update this on every release
 export const APP_PHASE = 'alpha' as 'alpha' | 'beta' | 'qa' | 'prod';
 export const APP_DESCRIPTION = 'A Next.js framework for building web applications.';
 export const APP_TAGS = ['next.js', 'Convex','shadcn/ui','react', 'typescript', 'tailwindcss', 'pwa','webapp'];
