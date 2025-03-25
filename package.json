@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@auth/core": "^0.37.0",
+    "@coinbase/wallet-sdk": "^4.3.1",
     "@convex-dev/auth": "^0.0.80",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.6",
@@ -37,10 +38,14 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.6",
     "@tanstack/react-table": "^8.21.2",
+    "@web3modal/ethereum": "^2.7.1",
+    "@web3modal/react": "^2.7.1",
+    "@web3modal/wagmi": "^5.1.11",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "convex": "^1.20.0",
     "date-fns": "^4.1.0",
+    "ethers": "^6.13.5",
     "lucide-react": "^0.468.0",
     "next": "14.2.5",
     "next-themes": "^0.3.0",
@@ -51,6 +56,8 @@
     "recharts": "^2.15.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
+    "viem": "^2.23.14",
+    "wagmi": "^2.14.15",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
