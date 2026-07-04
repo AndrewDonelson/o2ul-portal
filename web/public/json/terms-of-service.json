@@ -1,0 +1,175 @@
+{
+  "title": "Terms of Service",
+  "lastUpdated": "2025-01-10",
+  "introduction": {
+    "heading": "Introduction",
+    "content": [
+      "Welcome to O2UL (\"the Platform\"). By accessing or using our services, you agree to these Terms of Service (\"Terms\"). Please read them carefully.",
+      "O2UL is a global financial platform that empowers users to participate in a revolutionary dual-token economy while maintaining personal responsibility for their actions and transactions."
+    ]
+  },
+  "sections": [
+    {
+      "id": "acceptance",
+      "heading": "Acceptance of Terms",
+      "content": [
+        "By using O2UL, you agree to:",
+        {
+          "type": "list",
+          "items": [
+            "Be at least 18 years of age or have parental consent",
+            "Comply with all applicable laws and regulations",
+            "Take responsibility for your actions and transactions",
+            "Accept our Privacy Policy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "service-provision",
+      "heading": "Service Provision",
+      "content": [
+        "O2UL provides a dual-token blockchain ecosystem featuring:",
+        {
+          "type": "list",
+          "items": [
+            "O2V (Value Token) - a scarcity-based token for long-term value storage",
+            "O2S (Stability Token) - an AI-powered algorithmic stablecoin",
+            "Blockchain infrastructure for secure transactions",
+            "Integrated wallet and exchange functionality"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "user-rights",
+      "heading": "User Rights",
+      "content": [
+        "Users have the right to:",
+        {
+          "type": "list",
+          "items": [
+            "Create and manage blockchain accounts",
+            "Conduct transactions within legal boundaries",
+            "Access real-time market data and analytics",
+            "Participate in the token economy according to system rules"
+          ]
+        },
+        "Users must not engage in:",
+        {
+          "type": "list",
+          "items": [
+            "Illegal activities or money laundering",
+            "Market manipulation or fraud",
+            "Unauthorized access to others' accounts",
+            "Violations of applicable financial regulations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "financial-responsibility",
+      "heading": "Financial Responsibility and Risk",
+      "content": [
+        "Users acknowledge and accept:",
+        {
+          "type": "list",
+          "items": [
+            "Cryptocurrency and blockchain markets are volatile",
+            "Investment decisions are solely the user's responsibility",
+            "O2UL does not provide financial advice",
+            "Users may lose part or all of their invested funds",
+            "O2UL is not liable for market losses or price fluctuations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "content-ownership",
+      "heading": "Content and Account Ownership",
+      "content": [
+        "Users retain ownership of their account and transactions while granting O2UL necessary rights to:",
+        {
+          "type": "list",
+          "items": [
+            "Store and process transaction data",
+            "Display transaction history and analytics",
+            "Enforce compliance with blockchain protocols",
+            "Modify technical formats for service operation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "termination",
+      "heading": "Account Termination",
+      "content": [
+        "O2UL reserves the right to suspend or terminate accounts that:",
+        {
+          "type": "list",
+          "items": [
+            "Engage in illegal activities",
+            "Violate financial regulations or AML/KYC requirements",
+            "Conduct fraud, manipulation, or hacking attempts",
+            "Violate applicable laws or these Terms"
+          ]
+        },
+        "Account termination decisions may be made at O2UL's sole discretion in compliance with legal requirements."
+      ]
+    },
+    {
+      "id": "liability",
+      "heading": "Limitation of Liability",
+      "content": [
+        "O2UL is provided \"as is\" without warranties. We are not liable for:",
+        {
+          "type": "list",
+          "items": [
+            "Market losses or price volatility",
+            "Service interruptions or technical failures",
+            "Loss of access to accounts or funds",
+            "Third-party actions affecting the network",
+            "Any consequential, incidental, or punitive damages"
+          ]
+        },
+        "Users access and use the platform at their own risk."
+      ]
+    },
+    {
+      "id": "modifications",
+      "heading": "Modifications to Terms",
+      "content": [
+        "O2UL may modify these terms at any time. Continued use of the platform constitutes acceptance of modified terms.",
+        "Users will be notified of significant changes through the platform or email notification."
+      ]
+    },
+    {
+      "id": "indemnification",
+      "heading": "Indemnification",
+      "content": [
+        "Users agree to indemnify and hold harmless O2UL, its operators, developers, and affiliates from:",
+        {
+          "type": "list",
+          "items": [
+            "Claims arising from user transactions or actions",
+            "Violations of these Terms or applicable laws",
+            "Disputes with other users",
+            "Legal fees and costs related to user activities",
+            "Regulatory fines or penalties for user misconduct"
+          ]
+        }
+      ]
+    }
+  ],
+  "contact": {
+    "heading": "Contact Information",
+    "content": [
+      "For inquiries regarding these Terms, please visit our website or contact through the platform support system."
+    ]
+  },
+  "footer": {
+    "text": "These Terms of Service are effective as of January 10, 2025 and supersede all previous versions.",
+    "company": "O2UL",
+    "rights": "All rights reserved."
+  }
+}

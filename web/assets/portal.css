@@ -1,0 +1,370 @@
+.portal-home {
+  display: grid;
+  gap: 18px;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+/* Scrollable Viewport */
+.scrollable-viewport {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: none;
+  scroll-behavior: smooth;
+}
+
+/* Hero Section */
+.portal-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 40px 20px;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.hero-content {
+  text-align: center;
+  max-width: 900px;
+}
+
+.hero-title {
+  margin: 30px 0 18px;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.hero-subtitle {
+  margin: 0 0 20px;
+  font-size: 1.05rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  max-width: 800px;
+  margin-inline: auto;
+}
+
+.hero-tagline {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-accent) 58%, var(--color-text) 42%);
+}
+
+/* Ecosystem Section */
+.portal-home {
+  min-height: 100vh;
+  padding: 60px 20px;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.portal-eyebrow {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-accent) 70%, var(--color-text) 30%);
+  margin: 0 0 12px;
+  margin-bottom: 25px;
+}
+
+.portal-title {
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.3rem);
+  text-align: center;
+}
+
+.portal-intro {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.portal-intro.lead {
+  max-width: 880px;
+  margin-inline: auto;
+  text-align: center;
+  font-size: 1.02rem;
+}
+
+.portal-tagline {
+  margin: -8px 0 2px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-accent) 58%, var(--color-text) 42%);
+}
+
+.splash-logo-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.splash-logo {
+  width: min(240px, 60vw);
+  height: auto;
+  filter: drop-shadow(0 14px 30px color-mix(in srgb, var(--color-bg) 55%, transparent));
+  animation: portal-fade 450ms ease-out;
+}
+
+@keyframes portal-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.portal-grid {
+  margin-top: 2px;
+}
+
+.intro-panel p {
+  margin: 10px 0 0;
+}
+
+.portal-panel p {
+  color: var(--color-muted);
+  line-height: 1.48;
+}
+
+.panel-note {
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.panel-footnote {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--color-line) 60%, transparent);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--color-accent) 52%, var(--color-text) 48%);
+}
+
+@media (min-width: 769px) {
+  .timeframe-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Whitepaper Section */
+.portal-whitepaper {
+  min-height: 100vh;
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin-inline: auto;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.portal-whitepaper .portal-title {
+  margin-bottom: 40px;
+}
+
+.section-heading {
+  margin: 40px 0 24px;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 1rem + 1.2vw, 1.7rem);
+  font-weight: 700;
+  color: color-mix(in srgb, var(--color-accent) 48%, var(--color-text) 52%);
+}
+
+.portal-whitepaper .portal-panel h4 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.portal-whitepaper .portal-panel h5 {
+  margin: 18px 0 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--color-accent) 40%, var(--color-text) 60%);
+}
+
+.token-details {
+  display: grid;
+  gap: 20px;
+}
+
+.portal-whitepaper ul {
+  margin: 12px 0;
+  padding-left: 20px;
+}
+
+.portal-whitepaper li {
+  margin: 6px 0;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.portal-whitepaper li strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* Portal Footer */
+.portal-footer {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 40%, transparent), color-mix(in srgb, var(--color-surface) 60%, transparent));
+  border-top: 1px solid var(--color-line);
+  padding: 28px 20px;
+  margin-top: 20px;
+  flex-shrink: 0;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-links a {
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: var(--color-accent);
+}
+
+.footer-copyright {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Legal Modals */
+.legal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: var(--color-overlay-backdrop);
+}
+
+.legal-modal-panel {
+  width: 95vw;
+  height: 95vh;
+  max-width: 95vw;
+  max-height: 95vh;
+  overflow: auto;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--color-surface) 90%, transparent), var(--color-surface-alt));
+  padding: 14px;
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--color-bg) 55%, transparent);
+}
+
+.legal-modal-content {
+  display: grid;
+  gap: 12px;
+}
+
+.legal-modal-card,
+.legal-modal-card.ui-card {
+  background: linear-gradient(165deg, color-mix(in srgb, var(--color-surface) 92%, transparent), var(--color-surface-alt));
+  border: 1px solid var(--color-line);
+  color: var(--color-text);
+}
+
+.legal-modal-card .ui-card-body,
+.legal-modal-card .shared-content-card-body {
+  color: var(--color-muted);
+}
+
+.legal-modal-card .shared-page-header-title,
+.legal-modal-card .legal-modal-section h3 {
+  color: var(--color-text);
+}
+
+.legal-modal-card .shared-page-header-description,
+.legal-modal-card .legal-modal-section p,
+.legal-modal-card .legal-modal-section li,
+.legal-modal-footer,
+.legal-modal-loading {
+  color: var(--color-muted);
+}
+
+.legal-modal-card a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.legal-modal-card a:hover {
+  text-decoration: underline;
+}
+
+.legal-modal-close {
+  position: sticky;
+  top: 0;
+  margin-left: auto;
+  z-index: 2;
+}
+
+.legal-modal-section {
+  color: var(--color-muted);
+  line-height: 1.55;
+}
+
+.legal-modal-section h3 {
+  color: var(--color-text);
+  margin: 0 0 8px;
+}
+
+.legal-modal-section ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.legal-modal-footer {
+  border-top: 1px solid var(--color-line);
+  padding-top: 10px;
+  color: var(--color-muted);
+}
+
+@media (min-width: 769px) {
+  .footer-container {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .footer-links {
+    gap: 32px;
+  }
+}
