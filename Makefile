@@ -10,7 +10,7 @@ TEST_LOG_DIR ?= tmp
 TEST_LOG_FILE ?= $(TEST_LOG_DIR)/test.log
 FRONTEND_DIR ?= web
 
-.PHONY: help tidy test test-sentinel run-api run-web run-orchestrator dev-orchestrator free-dev-ports dev-orchestrator-clean migrate-up migrate-down build frontend-install frontend-build frontend-watch generate-deploy-known-hosts sync-deploy-secrets setup-nginx-once verify-nginx-setup
+.PHONY: help tidy test test-sentinel run-api run-web run-orchestrator dev-orchestrator free-dev-ports dev-orchestrator-clean migrate-up migrate-down build frontend-install frontend-build frontend-watch lighthouse lighthouse-new-headless generate-deploy-known-hosts sync-deploy-secrets setup-nginx-once verify-nginx-setup
 
 help:
 	@echo "$(CYAN)com.nlaak.backend-template$(NC)"
@@ -27,6 +27,8 @@ help:
 	@echo "  $(GREEN)make dev-orchestrator-clean$(NC)- free dev ports, then run orchestrator stack"
 	@echo "  $(GREEN)make frontend-build$(NC)  - compile frontend TypeScript to web/dist"
 	@echo "  $(GREEN)make frontend-watch$(NC)  - watch/compile frontend TypeScript"
+	@echo "  $(GREEN)make lighthouse$(NC)      - stable Lighthouse run (writes tmp/lighthouse-stable.json)"
+	@echo "  $(GREEN)make lighthouse-new-headless$(NC) - Lighthouse run with --headless=new (can be flaky)"
 	@echo "  $(GREEN)make generate-deploy-known-hosts$(NC)- fetch VPS host key and set DEPLOY_SSH_KNOWN_HOSTS in .env"
 	@echo "  $(GREEN)make sync-deploy-secrets$(NC)- publish DEPLOY_* + known hosts from .env to GitHub Actions secrets"
 	@echo "  $(GREEN)make setup-nginx-once$(NC) - configure nginx reverse-proxy once from .env values"
@@ -96,6 +98,14 @@ frontend-build:
 
 frontend-watch: frontend-install
 	@cd $(FRONTEND_DIR) && npm run watch
+
+lighthouse:
+	@mkdir -p tmp
+	@timeout 240s npx --yes lighthouse http://localhost:8080/ --output=json --output-path=tmp/lighthouse-stable.json --chrome-flags='--headless=chrome --no-sandbox --disable-gpu --disable-dev-shm-usage'
+
+lighthouse-new-headless:
+	@mkdir -p tmp
+	@timeout 240s npx --yes lighthouse http://localhost:8080/ --output=json --output-path=tmp/lighthouse-new-headless.json --chrome-flags='--headless=new --no-sandbox'
 
 generate-deploy-known-hosts:
 	@bash ./scripts/generate_deploy_known_hosts.sh

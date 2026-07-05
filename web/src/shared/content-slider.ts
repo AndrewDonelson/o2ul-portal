@@ -26,7 +26,7 @@ export function createContentSlider(slides: HTMLElement[], options?: SliderOptio
     });
     dotButtons.forEach((dot, index) => {
       dot.classList.toggle("is-active", index === currentIndex);
-      dot.setAttribute("aria-selected", index === currentIndex ? "true" : "false");
+      dot.setAttribute("aria-pressed", index === currentIndex ? "true" : "false");
     });
   }
 
@@ -41,7 +41,7 @@ export function createContentSlider(slides: HTMLElement[], options?: SliderOptio
     dot.type = "button";
     dot.className = "shared-slider-dot";
     dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
-    dot.setAttribute("aria-selected", index === 0 ? "true" : "false");
+    dot.setAttribute("aria-pressed", index === 0 ? "true" : "false");
     dot.addEventListener("click", () => {
       renderActiveSlide(index);
       restart();

@@ -22,3 +22,9 @@ logs/
 
 # Go
 coverage.out
+
+# Temp artifacts
+tmp/*
+!tmp/.gitkeep
+!tmp/lighthouse-report*.json
+!tmp/lighthouse-report*.html

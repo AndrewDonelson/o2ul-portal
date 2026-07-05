@@ -265,3 +265,15 @@ Defaults and overrides:
 - Orchestrator backend adapters are selected by configuration and can be swapped without changing handlers.
 - Down migrations are intentionally disabled in Strata-only mode; use forward/additive migrations.
 - No game/plot/Three.js client runtime is included; frontend is template-only and server-focused.
+
+## Lighthouse
+
+Use the stable target for repeatable local audits:
+
+```bash
+make lighthouse
+```
+
+Output is written to `tmp/lighthouse-stable.json`.
+
+`make lighthouse-new-headless` is available for parity/debug runs, but can intermittently produce `NO_FCP` in some headless environments even when the page renders.

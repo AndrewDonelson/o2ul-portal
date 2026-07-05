@@ -192,7 +192,7 @@
   color: var(--color-text);
 }
 
-.portal-whitepaper .portal-panel h5 {
+.portal-whitepaper .portal-panel .token-subheading {
   margin: 18px 0 10px;
   font-size: 0.95rem;
   font-weight: 700;
@@ -275,6 +275,10 @@
   justify-content: center;
   padding: 10px;
   background: var(--color-overlay-backdrop);
+}
+
+.legal-modal-overlay[hidden] {
+  display: none !important;
 }
 
 .legal-modal-panel {

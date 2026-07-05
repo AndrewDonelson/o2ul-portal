@@ -1,10 +1,12 @@
 package main
 
 import (
+	"compress/gzip"
 	"context"
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -31,6 +33,78 @@ func secureHeaders(next http.Handler) http.Handler {
 	})
 }
 
+func cacheControl(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+
+		switch {
+		case path == "/healthz" || path == "/internal/shutdown":
+			w.Header().Set("Cache-Control", "no-store")
+		case strings.HasPrefix(path, "/assets/") ||
+			strings.HasPrefix(path, "/dist/") ||
+			strings.HasPrefix(path, "/images/") ||
+			strings.HasPrefix(path, "/json/") ||
+			strings.HasPrefix(path, "/themes/") ||
+			path == "/favicon.svg" ||
+			path == "/manifest.webmanifest":
+			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+		case path == "/" || strings.HasSuffix(path, ".html"):
+			w.Header().Set("Cache-Control", "public, max-age=300")
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+type gzipResponseWriter struct {
+	http.ResponseWriter
+	Writer io.Writer
+}
+
+func (g gzipResponseWriter) Write(p []byte) (int, error) {
+	return g.Writer.Write(p)
+}
+
+func compression(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			next.ServeHTTP(w, r)
+			return
+		}
+		if r.Header.Get("Range") != "" {
+			next.ServeHTTP(w, r)
+			return
+		}
+		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		path := r.URL.Path
+		compressible := path == "/" ||
+			strings.HasSuffix(path, ".html") ||
+			strings.HasSuffix(path, ".css") ||
+			strings.HasSuffix(path, ".js") ||
+			strings.HasSuffix(path, ".svg") ||
+			strings.HasSuffix(path, ".json") ||
+			strings.HasSuffix(path, ".webmanifest") ||
+			strings.HasSuffix(path, ".txt")
+		if !compressible {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		w.Header().Add("Vary", "Accept-Encoding")
+		w.Header().Set("Content-Encoding", "gzip")
+		w.Header().Del("Content-Length")
+
+		gzipWriter := gzip.NewWriter(w)
+		defer gzipWriter.Close()
+
+		next.ServeHTTP(gzipResponseWriter{ResponseWriter: w, Writer: gzipWriter}, r)
+	})
+}
+
 func staticHandler(root string) (http.Handler, error) {
 	cleanRoot := filepath.Clean(root)
 	if _, err := os.Stat(cleanRoot); err != nil {
@@ -43,7 +117,7 @@ func staticHandler(root string) (http.Handler, error) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
 	})
-	return secureHeaders(mux), nil
+	return secureHeaders(cacheControl(compression(mux))), nil
 }
 
 func main() {
