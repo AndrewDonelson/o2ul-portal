@@ -1,5 +1,5 @@
-import type { UiBaseOptions } from "./types";
-import { applyBaseOptions } from "./utils";
+import type { UiBaseOptions } from "./types.js";
+import { applyBaseOptions } from "./utils.js";
 
 export interface SwitchOptions extends UiBaseOptions {
   checked?: boolean;

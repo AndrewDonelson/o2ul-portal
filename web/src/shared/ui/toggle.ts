@@ -1,5 +1,5 @@
-import type { UiBaseOptions, UiTone } from "./types";
-import { applyBaseOptions, toneClass } from "./utils";
+import type { UiBaseOptions, UiTone } from "./types.js";
+import { applyBaseOptions, toneClass } from "./utils.js";
 
 export interface ToggleOptions extends UiBaseOptions {
   label: string;

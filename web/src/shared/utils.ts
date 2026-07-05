@@ -1,4 +1,4 @@
-import type { HorizontalAlign } from "./types";
+import type { HorizontalAlign } from "./types.js";
 
 export const DEFAULT_COPYRIGHT_FROM = 2017;
 export const DEFAULT_COPYRIGHT_HOLDER = "Nlaak Studios, LLC";

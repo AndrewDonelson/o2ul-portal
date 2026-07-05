@@ -1,5 +1,5 @@
-import type { UiBaseOptions } from "./types";
-import { applyBaseOptions } from "./utils";
+import type { UiBaseOptions } from "./types.js";
+import { applyBaseOptions } from "./utils.js";
 
 export interface CardOptions extends UiBaseOptions {
   title?: string;

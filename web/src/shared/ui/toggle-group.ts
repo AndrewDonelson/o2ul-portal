@@ -1,6 +1,6 @@
-import type { UiBaseOptions } from "./types";
-import { applyBaseOptions } from "./utils";
-import { createToggle } from "./toggle";
+import type { UiBaseOptions } from "./types.js";
+import { applyBaseOptions } from "./utils.js";
+import { createToggle } from "./toggle.js";
 
 export interface ToggleGroupItem {
   label: string;

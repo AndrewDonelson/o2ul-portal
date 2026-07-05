@@ -1,4 +1,4 @@
-import type { SliderOptions } from "./types";
+import type { SliderOptions } from "./types.js";
 
 export function createContentSlider(slides: HTMLElement[], options?: SliderOptions): HTMLElement {
   const slider = document.createElement("section");

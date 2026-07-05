@@ -1,5 +1,5 @@
-import type { UiBaseOptions } from "./types";
-import { applyBaseOptions } from "./utils";
+import type { UiBaseOptions } from "./types.js";
+import { applyBaseOptions } from "./utils.js";
 
 export function createScrollArea(content: HTMLElement, options?: UiBaseOptions): HTMLElement {
   const area = document.createElement("div");

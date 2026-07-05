@@ -1,5 +1,5 @@
-import type { UiBaseOptions, UiSize } from "./types";
-import { applyBaseOptions, sizeClass } from "./utils";
+import type { UiBaseOptions, UiSize } from "./types.js";
+import { applyBaseOptions, sizeClass } from "./utils.js";
 
 export interface InputOptions extends UiBaseOptions {
   name: string;

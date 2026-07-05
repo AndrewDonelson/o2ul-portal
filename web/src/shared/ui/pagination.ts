@@ -1,6 +1,6 @@
-import type { UiBaseOptions } from "./types";
-import { applyBaseOptions } from "./utils";
-import { createButton } from "./button";
+import type { UiBaseOptions } from "./types.js";
+import { applyBaseOptions } from "./utils.js";
+import { createButton } from "./button.js";
 
 export interface PaginationOptions extends UiBaseOptions {
   currentPage: number;

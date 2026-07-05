@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"syscall"
 	"strings"
 )
 
@@ -28,6 +30,9 @@ func RequestManagedShutdown(ctx context.Context, url, token, reason string) erro
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
+		if errors.Is(err, syscall.ECONNREFUSED) {
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()

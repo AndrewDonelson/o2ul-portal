@@ -1,6 +1,6 @@
-import type { ContentCardOptions } from "./types";
-import { alignClass } from "./utils";
-import { createCard } from "./ui/card";
+import type { ContentCardOptions } from "./types.js";
+import { alignClass } from "./utils.js";
+import { createCard } from "./ui/card.js";
 
 export function createContentCard(options: ContentCardOptions): HTMLElement {
   const card = createCard({

@@ -1,4 +1,4 @@
-import { pushToast } from "./toaster";
+import { pushToast } from "./toaster.js";
 
 export function useToast() {
   return {

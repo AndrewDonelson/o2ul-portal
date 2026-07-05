@@ -10,7 +10,7 @@ TEST_LOG_DIR ?= tmp
 TEST_LOG_FILE ?= $(TEST_LOG_DIR)/test.log
 FRONTEND_DIR ?= web
 
-.PHONY: help tidy test test-sentinel run-api run-web run-orchestrator dev-orchestrator migrate-up migrate-down build frontend-install frontend-build frontend-watch generate-deploy-known-hosts sync-deploy-secrets setup-nginx-once verify-nginx-setup
+.PHONY: help tidy test test-sentinel run-api run-web run-orchestrator dev-orchestrator free-dev-ports dev-orchestrator-clean migrate-up migrate-down build frontend-install frontend-build frontend-watch generate-deploy-known-hosts sync-deploy-secrets setup-nginx-once verify-nginx-setup
 
 help:
 	@echo "$(CYAN)com.nlaak.backend-template$(NC)"
@@ -23,6 +23,8 @@ help:
 	@echo "  $(GREEN)make run-web$(NC)         - run WEB service (:8081 default)"
 	@echo "  $(GREEN)make run-orchestrator$(NC)- run orchestrator service (:8090 default)"
 	@echo "  $(GREEN)make dev-orchestrator$(NC)- build api/web/orchestrator binaries and run orchestrator"
+	@echo "  $(GREEN)make free-dev-ports$(NC) - stop listeners on 8080/9000/9100"
+	@echo "  $(GREEN)make dev-orchestrator-clean$(NC)- free dev ports, then run orchestrator stack"
 	@echo "  $(GREEN)make frontend-build$(NC)  - compile frontend TypeScript to web/dist"
 	@echo "  $(GREEN)make frontend-watch$(NC)  - watch/compile frontend TypeScript"
 	@echo "  $(GREEN)make generate-deploy-known-hosts$(NC)- fetch VPS host key and set DEPLOY_SSH_KNOWN_HOSTS in .env"
@@ -53,12 +55,24 @@ run-orchestrator:
 	@go run ./cmd/orchestrator
 
 dev-orchestrator: frontend-install
+	@$(MAKE) free-dev-ports
 	@cd $(FRONTEND_DIR) && npm run build
 	@mkdir -p bin
 	@go build -o bin/api ./cmd/api
 	@go build -o bin/web ./cmd/web
 	@go build -o bin/orchestrator ./cmd/orchestrator
 	@JWT_SECRET=$${JWT_SECRET:-local-dev-jwt-secret} MANAGED_API_COMMAND=./bin/api MANAGED_API_ARGS='--' MANAGED_WEB_COMMAND=./bin/web MANAGED_WEB_ARGS='--' ./bin/orchestrator
+
+free-dev-ports:
+	@for p in 8080 9000 9100; do \
+		pids=$$(ss -ltnp | awk -v port=":$$p" '$$4 ~ port {print $$NF}' | sed -n 's/.*pid=\([0-9]\+\).*/\1/p' | sort -u); \
+		if [ -n "$$pids" ]; then \
+			echo "$(YELLOW)stopping port $$p pids: $$pids$(NC)"; \
+			kill -TERM $$pids || true; \
+		fi; \
+	done
+
+dev-orchestrator-clean: free-dev-ports dev-orchestrator
 
 migrate-up:
 	@go run ./cmd/migrate

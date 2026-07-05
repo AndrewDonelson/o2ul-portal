@@ -1,5 +1,5 @@
-import type { HorizontalAlign } from "./types";
-import { alignClass } from "./utils";
+import type { HorizontalAlign } from "./types.js";
+import { alignClass } from "./utils.js";
 
 export function createPageHeader(title: string, description?: string, align: HorizontalAlign = "center"): HTMLElement {
   const root = document.createElement("header");

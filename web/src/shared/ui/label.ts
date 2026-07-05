@@ -1,5 +1,5 @@
-import type { UiBaseOptions } from "./types";
-import { applyBaseOptions } from "./utils";
+import type { UiBaseOptions } from "./types.js";
+import { applyBaseOptions } from "./utils.js";
 
 export interface LabelOptions extends UiBaseOptions {
   text: string;

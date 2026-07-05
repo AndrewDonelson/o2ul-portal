@@ -1,4 +1,4 @@
-import type { UiBaseOptions, UiSize, UiTone } from "./types";
+import type { UiBaseOptions, UiSize, UiTone } from "./types.js";
 
 export function applyBaseOptions(el: HTMLElement, options?: UiBaseOptions): void {
   if (!options) return;

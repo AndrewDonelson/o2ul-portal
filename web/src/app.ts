@@ -1,6 +1,6 @@
-import { initLegalModals } from "./legal-modals";
-import { createCopyrightNotice, sharedComponents } from "./shared/components";
-import { renderSharedComponentShowcase } from "./shared/showcase";
+import { initLegalModals } from "./legal-modals.js";
+import { createCopyrightNotice, sharedComponents } from "./shared/components.js";
+import { renderSharedComponentShowcase } from "./shared/showcase.js";
 
 declare global {
 	interface Window {

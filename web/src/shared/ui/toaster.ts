@@ -1,4 +1,4 @@
-import { createToast } from "./toast";
+import { createToast } from "./toast.js";
 
 export function ensureToasterHost(): HTMLElement {
   let host = document.querySelector<HTMLElement>(".ui-toast-host");

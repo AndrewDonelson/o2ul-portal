@@ -1,4 +1,4 @@
-import type { ChartDatum } from "./types";
+import type { ChartDatum } from "./types.js";
 
 function createSimpleBarChart(title: string, data: ChartDatum[], accentClass: string): HTMLElement {
   const card = document.createElement("section");

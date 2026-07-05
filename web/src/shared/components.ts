@@ -1,29 +1,29 @@
-export * from "./types";
-export { createContentCard } from "./content-card";
-export { createContentSlider } from "./content-slider";
-export { createDashboardCharts } from "./dashboard-charts";
-export { createDataTable } from "./data-table";
-export { createEmptyState } from "./empty-state";
-export { createPageHeader } from "./page-header";
-export { createStandardHeader } from "./standard-header";
-export { createStatsCard } from "./stats-card";
-export { calculateStatus, createStatusIndicator } from "./status-indicator";
-export { createTagLine } from "./tag-line";
-export { createCopyrightNotice } from "./copyright-notice";
-export * from "./ui/index";
+export * from "./types.js";
+export { createContentCard } from "./content-card.js";
+export { createContentSlider } from "./content-slider.js";
+export { createDashboardCharts } from "./dashboard-charts.js";
+export { createDataTable } from "./data-table.js";
+export { createEmptyState } from "./empty-state.js";
+export { createPageHeader } from "./page-header.js";
+export { createStandardHeader } from "./standard-header.js";
+export { createStatsCard } from "./stats-card.js";
+export { calculateStatus, createStatusIndicator } from "./status-indicator.js";
+export { createTagLine } from "./tag-line.js";
+export { createCopyrightNotice } from "./copyright-notice.js";
+export * from "./ui/index.js";
 
-import { createContentCard } from "./content-card";
-import { createContentSlider } from "./content-slider";
-import { createDashboardCharts } from "./dashboard-charts";
-import { createDataTable } from "./data-table";
-import { createEmptyState } from "./empty-state";
-import { createPageHeader } from "./page-header";
-import { createStandardHeader } from "./standard-header";
-import { createStatsCard } from "./stats-card";
-import { calculateStatus, createStatusIndicator } from "./status-indicator";
-import { createTagLine } from "./tag-line";
-import { createCopyrightNotice } from "./copyright-notice";
-import * as uiComponents from "./ui/index";
+import { createContentCard } from "./content-card.js";
+import { createContentSlider } from "./content-slider.js";
+import { createDashboardCharts } from "./dashboard-charts.js";
+import { createDataTable } from "./data-table.js";
+import { createEmptyState } from "./empty-state.js";
+import { createPageHeader } from "./page-header.js";
+import { createStandardHeader } from "./standard-header.js";
+import { createStatsCard } from "./stats-card.js";
+import { calculateStatus, createStatusIndicator } from "./status-indicator.js";
+import { createTagLine } from "./tag-line.js";
+import { createCopyrightNotice } from "./copyright-notice.js";
+import * as uiComponents from "./ui/index.js";
 
 export const sharedComponents = {
   createContentCard,

@@ -1,6 +1,6 @@
-import type { UiBaseOptions, UiTone } from "./types";
-import { applyBaseOptions, toneClass } from "./utils";
-import type { DataTableColumn } from "../types";
+import type { UiBaseOptions, UiTone } from "./types.js";
+import { applyBaseOptions, toneClass } from "./utils.js";
+import type { DataTableColumn } from "../types.js";
 
 export interface TableOptions extends UiBaseOptions {
   columns: DataTableColumn[];

@@ -1,4 +1,4 @@
-import type { StatsCardOptions } from "./types";
+import type { StatsCardOptions } from "./types.js";
 
 export function createStatsCard(options: StatsCardOptions): HTMLElement {
   const card = document.createElement("article");

@@ -1,5 +1,5 @@
-import type { StatusType } from "./types";
-import { createBadge } from "./ui/badge";
+import type { StatusType } from "./types.js";
+import { createBadge } from "./ui/badge.js";
 
 export function calculateStatus(lastSeenEpochMs?: number): StatusType {
   if (!lastSeenEpochMs) return "offline";

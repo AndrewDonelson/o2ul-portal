@@ -10,10 +10,10 @@ import {
   createStatusIndicator,
   createTagLine,
   createCopyrightNotice,
-} from "./components";
-import { createButton } from "./ui/button";
-import { createBadge } from "./ui/badge";
-import { createProgress } from "./ui/progress";
+} from "./components.js";
+import { createButton } from "./ui/button.js";
+import { createBadge } from "./ui/badge.js";
+import { createProgress } from "./ui/progress.js";
 
 function createShowcaseBlock(title: string): HTMLElement {
   const block = document.createElement("section");

@@ -3,8 +3,10 @@ package orchestrator
 import (
 	"context"
 	"encoding/json"
+	"net"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 )
 
@@ -48,6 +50,20 @@ func TestRequestManagedShutdown(t *testing.T) {
 		defer srv.Close()
 		if err := RequestManagedShutdown(context.Background(), srv.URL, "token", "test-reason"); err != nil {
 			t.Fatalf("unexpected shutdown request error: %v", err)
+		}
+	})
+
+	t.Run("connection refused is treated as already stopped", func(t *testing.T) {
+		ln, err := net.Listen("tcp", "127.0.0.1:0")
+		if err != nil {
+			t.Fatalf("listen failed: %v", err)
+		}
+		addr := ln.Addr().(*net.TCPAddr)
+		_ = ln.Close()
+
+		target := "http://127.0.0.1:" + strconv.Itoa(addr.Port) + "/internal/shutdown"
+		if err := RequestManagedShutdown(context.Background(), target, "token", "reason"); err != nil {
+			t.Fatalf("connection refused should be non-fatal: %v", err)
 		}
 	})
 }

@@ -1,5 +1,5 @@
-import type { UiBaseOptions, UiSize, UiTone } from "./types";
-import { applyBaseOptions, sizeClass, toneClass } from "./utils";
+import type { UiBaseOptions, UiSize, UiTone } from "./types.js";
+import { applyBaseOptions, sizeClass, toneClass } from "./utils.js";
 
 export interface ButtonOptions extends UiBaseOptions {
   label: string;

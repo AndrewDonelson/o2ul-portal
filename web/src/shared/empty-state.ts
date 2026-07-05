@@ -1,4 +1,4 @@
-import type { EmptyStateOptions } from "./types";
+import type { EmptyStateOptions } from "./types.js";
 
 export function createEmptyState(options: EmptyStateOptions): HTMLElement {
   const root = document.createElement("section");

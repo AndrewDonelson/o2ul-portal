@@ -1,4 +1,4 @@
-import { createContentCard, createCopyrightNotice, createPageHeader } from "./shared/components";
+import { createContentCard, createCopyrightNotice, createPageHeader } from "./shared/components.js";
 
 type PolicyKind = "privacy" | "terms";
 

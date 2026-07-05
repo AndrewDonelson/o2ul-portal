@@ -1,10 +1,10 @@
-import type { HorizontalAlign } from "./types";
+import type { HorizontalAlign } from "./types.js";
 import {
   alignClass,
   currentYearDisplay,
   DEFAULT_COPYRIGHT_FROM,
   DEFAULT_COPYRIGHT_HOLDER,
-} from "./utils";
+} from "./utils.js";
 
 export function createCopyrightNotice(
   holder = DEFAULT_COPYRIGHT_HOLDER,

@@ -1,5 +1,5 @@
-import type { UiBaseOptions } from "./types";
-import { createDialog } from "./dialog";
+import type { UiBaseOptions } from "./types.js";
+import { createDialog } from "./dialog.js";
 
 export interface AlertDialogOptions extends UiBaseOptions {
   title: string;
