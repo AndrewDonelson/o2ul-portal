@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"syscall"
 	"strings"
+	"syscall"
 )
 
 func RequestManagedShutdown(ctx context.Context, url, token, reason string) error {
