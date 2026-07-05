@@ -1,6 +1,6 @@
-# com.nlaak.backend-template
+# O2UL Portal
 
-A production-ready backend starter template extracted from orchestrator and server foundations, without game-specific code.
+The current project is a Go-first backend template with a lightweight TypeScript web console under `web/`.
 
 Persistence in this repository is 100% Strata (`github.com/AndrewDonelson/strata`) using PostgreSQL as L3 and optional Redis as L2.
 
@@ -17,6 +17,18 @@ Persistence in this repository is 100% Strata (`github.com/AndrewDonelson/strata
 - Subspace-style frontend packaging via `web/build.mjs` into `web/dist-app`
 - TS7 native preview typechecking (`tsgo`) in frontend build scripts
 - Clear package boundaries with interfaces for app/domain/infrastructure layers
+
+## Repository Layout
+
+- `cmd/api` - API service entrypoint
+- `cmd/web` - internal WEB server for static frontend assets
+- `cmd/orchestrator` - local lifecycle manager and log sink
+- `cmd/migrate` - migration runner
+- `internal/domain` - entities and core business rules
+- `internal/application` - use cases and boundary interfaces
+- `internal/infrastructure` - adapters (http, db, orchestrator, logging, payments)
+- `web` - static TypeScript frontend modules and build pipeline
+- `scripts` - deployment and ops helper scripts
 
 ## RBAC Roles
 
