@@ -1,0 +1,358 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [production]
+  workflow_dispatch:
+    inputs:
+      deploy_ref:
+        description: Git ref to deploy on VPS (branch, tag, or SHA)
+        required: false
+        default: production
+        type: string
+      deploy_target:
+        description: Deploy target VPS (single target per run)
+        required: false
+        default: sombrero
+        type: choice
+        options:
+          - sombrero
+          - andromeda
+      deploy_repo_path:
+        description: Optional absolute path to repository on VPS
+        required: false
+        default: ''
+        type: string
+      restart_orchestrator:
+        description: Restart orchestrator service after deploy
+        required: false
+        default: true
+        type: boolean
+
+env:
+  REMOTE_DEPLOY_SCRIPT: |
+    set -euo pipefail
+
+    SUDO=""
+    PREV_COMMIT=""
+    ROLLBACK_READY=0
+
+    restart_service_if_present() {
+      SERVICE_NAME="$1"
+      if systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -qx "${SERVICE_NAME}.service"; then
+        echo "==> Restarting ${SERVICE_NAME}.service"
+        $SUDO systemctl restart "${SERVICE_NAME}.service"
+      else
+        echo "==> Skipping missing service ${SERVICE_NAME}.service"
+      fi
+    }
+
+    expect_http_status() {
+      URL="$1"
+      EXPECTED="$2"
+      LABEL="$3"
+
+      CODE="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "$URL" || true)"
+      if ! echo ",$EXPECTED," | grep -q ",${CODE},"; then
+        echo "Smoke failed for ${LABEL}: expected [${EXPECTED}] got [${CODE}] from ${URL}" >&2
+        return 1
+      fi
+
+      echo "Smoke ok for ${LABEL}: ${CODE}"
+    }
+
+    run_post_deploy_smokes() {
+      if [ -n "${API_HEALTH_URL:-}" ]; then
+        expect_http_status "${API_HEALTH_URL}" "200" "api-health"
+      fi
+
+      if [ -n "${WEB_HEALTH_URL:-}" ]; then
+        expect_http_status "${WEB_HEALTH_URL}" "200" "web-health"
+      fi
+
+      if [ -n "${API_HEALTH_URL:-}" ]; then
+        API_BASE="${API_HEALTH_URL%/health}"
+        if [ "$API_BASE" = "$API_HEALTH_URL" ]; then
+          API_BASE="${API_HEALTH_URL%/}"
+        fi
+
+        expect_http_status "${API_BASE}/api/v1/auth/me" "401,403" "auth-me-unauthorized"
+        expect_http_status "${API_BASE}/api/v1/admin/users" "401,403" "admin-users-unauthorized"
+      fi
+    }
+
+    rollback_on_error() {
+      status=$?
+      if [ "$status" -eq 0 ] || [ "$ROLLBACK_READY" -ne 1 ] || [ -z "$PREV_COMMIT" ]; then
+        exit "$status"
+      fi
+
+      echo "==> Deployment failed, attempting rollback to ${PREV_COMMIT}"
+      git reset --hard "$PREV_COMMIT" || true
+      make frontend-build || true
+      make build || true
+
+      restart_service_if_present "${API_SERVICE_NAME:-backend-template-api}" || true
+      restart_service_if_present "${WEB_SERVICE_NAME:-backend-template-web}" || true
+      if [ "${RESTART_ORCHESTRATOR:-true}" = "true" ]; then
+        restart_service_if_present "${ORCHESTRATOR_SERVICE_NAME:-backend-template-orchestrator}" || true
+      fi
+
+      if run_post_deploy_smokes; then
+        echo "==> Rollback verification passed"
+      else
+        echo "==> Rollback verification failed" >&2
+      fi
+
+      echo "==> Rollback attempted"
+      exit "$status"
+    }
+
+    trap rollback_on_error EXIT
+
+    REPO=""
+
+    if [ -n "${REPO_PATH_OVERRIDE:-}" ] && { [ -d "$REPO_PATH_OVERRIDE/.git" ] || [ -f "$REPO_PATH_OVERRIDE/Makefile" ]; }; then
+      REPO="$REPO_PATH_OVERRIDE"
+    fi
+
+    if [ -z "$REPO" ] && [ -n "${REPO_CANDIDATES:-}" ]; then
+      OLD_IFS="$IFS"
+      IFS='|'
+      for CANDIDATE in $REPO_CANDIDATES; do
+        if [ -d "$CANDIDATE/.git" ] || [ -f "$CANDIDATE/Makefile" ]; then
+          REPO="$CANDIDATE"
+          break
+        fi
+      done
+      IFS="$OLD_IFS"
+    fi
+
+    if [ -z "$REPO" ]; then
+      echo "ERROR: Could not locate repository path on VPS"
+      exit 1
+    fi
+
+    if [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
+      SUDO="sudo"
+    fi
+
+    need_cmd() {
+      if command -v "$1" >/dev/null 2>&1; then
+        return 0
+      fi
+      echo "Missing required command: $1"
+      return 1
+    }
+
+    cd "$REPO"
+
+    need_cmd git
+    need_cmd make
+    need_cmd go
+    need_cmd npm
+
+    PREV_COMMIT="$(git rev-parse HEAD)"
+
+    echo "==> Fetching latest code"
+    git fetch --all --tags --prune
+    if git show-ref --verify --quiet "refs/heads/${DEPLOY_REF:-production}"; then
+      git checkout "${DEPLOY_REF:-production}"
+    else
+      git checkout -B "${DEPLOY_REF:-production}" "origin/${DEPLOY_REF:-production}"
+    fi
+    git pull --ff-only origin "${DEPLOY_REF:-production}"
+    ROLLBACK_READY=1
+
+    echo "==> Building frontend for internal WEB server"
+    make frontend-build
+
+    echo "==> Building backend binaries"
+    make build
+
+    restart_service_if_present "${API_SERVICE_NAME:-backend-template-api}"
+    restart_service_if_present "${WEB_SERVICE_NAME:-backend-template-web}"
+
+    if [ "${RESTART_ORCHESTRATOR:-true}" = "true" ]; then
+      restart_service_if_present "${ORCHESTRATOR_SERVICE_NAME:-backend-template-orchestrator}"
+    fi
+
+    echo "==> Running post-deploy smoke suite"
+    run_post_deploy_smokes
+
+    ROLLBACK_READY=0
+    trap - EXIT
+
+jobs:
+  secrets-scan:
+    name: Secrets Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: '1.25.11'
+          cache: false
+      - name: Run gitleaks on current workspace
+        run: |
+          set -euo pipefail
+          go install github.com/zricethezav/gitleaks/v8@v8.30.1
+          "$(go env GOPATH)/bin/gitleaks" dir --no-banner --redact .
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: '1.25.11'
+          cache-dependency-path: go.sum
+      - name: Go vet
+        run: go vet ./...
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+      - name: Staticcheck
+        run: staticcheck ./...
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: '1.25.11'
+          cache-dependency-path: go.sum
+      - name: Install govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Run govulncheck
+        run: govulncheck ./...
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ci_db_${{ github.run_id }}
+          POSTGRES_USER: ci_user_${{ github.run_id }}
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ci_user_${{ github.run_id }} -d ci_db_${{ github.run_id }}"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      APP_ENV: test
+      REDIS_ADDR: localhost:6379
+      MASTER_ADMIN_USERNAME: ciadmin${{ github.run_id }}
+      MASTER_ADMIN_EMAIL: ci+${{ github.run_id }}@example.invalid
+      WEB_ENABLE_HTTP3: false
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: '1.25.11'
+          cache-dependency-path: go.sum
+      - name: Run tests
+        run: make test
+
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+      - name: Build frontend
+        run: make frontend-build
+
+  deploy:
+    name: Deploy VPS
+    needs: [secrets-scan, lint, security, test, frontend-build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        env:
+          ALL_SECRETS_JSON: ${{ toJson(secrets) }}
+          ALL_VARS_JSON: ${{ toJson(vars) }}
+          DEPLOY_REF: ${{ github.event.inputs.deploy_ref }}
+          DEPLOY_TARGET: ${{ github.event.inputs.deploy_target }}
+          DEPLOY_REPO_PATH: ${{ github.event.inputs.deploy_repo_path }}
+          RESTART_ORCHESTRATOR: ${{ github.event.inputs.restart_orchestrator }}
+        run: |
+          set -euo pipefail
+
+          if ! command -v jq >/dev/null 2>&1; then
+            echo "::error::jq is required on runner but was not found"
+            exit 1
+          fi
+
+          SSH_HOST_SOMBRERO="$(printf '%s' "$ALL_SECRETS_JSON" | jq -r '.DEPLOY_HOST // empty')"
+          SSH_HOST_ANDROMEDA="$(printf '%s' "$ALL_SECRETS_JSON" | jq -r '.ANDROMEDA_HOST // empty')"
+          SSH_USER="$(printf '%s' "$ALL_SECRETS_JSON" | jq -r '.DEPLOY_USER // empty')"
+          SSH_KEY="$(printf '%s' "$ALL_SECRETS_JSON" | jq -r '.DEPLOY_SSH_KEY // empty')"
+          SSH_KNOWN_HOSTS="$(printf '%s' "$ALL_SECRETS_JSON" | jq -r '.DEPLOY_SSH_KNOWN_HOSTS // empty')"
+
+          API_SERVICE_NAME="$(printf '%s' "$ALL_VARS_JSON" | jq -r '.API_SERVICE_NAME // "backend-template-api"')"
+          WEB_SERVICE_NAME="$(printf '%s' "$ALL_VARS_JSON" | jq -r '.WEB_SERVICE_NAME // "backend-template-web"')"
+          ORCHESTRATOR_SERVICE_NAME="$(printf '%s' "$ALL_VARS_JSON" | jq -r '.ORCHESTRATOR_SERVICE_NAME // "backend-template-orchestrator"')"
+          API_HEALTH_URL="$(printf '%s' "$ALL_VARS_JSON" | jq -r '.API_HEALTH_URL // "http://127.0.0.1:8080/health"')"
+          WEB_HEALTH_URL="$(printf '%s' "$ALL_VARS_JSON" | jq -r '.WEB_HEALTH_URL // "http://127.0.0.1:8081/healthz"')"
+
+          target="${DEPLOY_TARGET:-sombrero}"
+          case "$target" in
+            sombrero)
+              SSH_HOST="${SSH_HOST_SOMBRERO:-}"
+              ;;
+            andromeda)
+              SSH_HOST="${SSH_HOST_ANDROMEDA:-}"
+              ;;
+            *)
+              echo "::error::Invalid deploy_target: $target (expected sombrero or andromeda)"
+              exit 1
+              ;;
+          esac
+
+          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_KEY" ] || [ -z "$SSH_KNOWN_HOSTS" ]; then
+            echo "::error::Required secrets missing for target '$target'"
+            echo "::error::Need DEPLOY_HOST (Sombrero), ANDROMEDA_HOST, DEPLOY_USER, DEPLOY_SSH_KEY, DEPLOY_SSH_KNOWN_HOSTS"
+            exit 1
+          fi
+
+          echo "Deploy target: $target ($SSH_HOST)"
+
+          install -m 600 /dev/null /tmp/deploy_key
+          echo "$SSH_KEY" > /tmp/deploy_key
+          install -m 600 /dev/null /tmp/known_hosts
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > /tmp/known_hosts
+
+          OPTS="-i /tmp/deploy_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/tmp/known_hosts -o ConnectTimeout=30"
+          REMOTE="${SSH_USER}@${SSH_HOST}"
+
+          DEPLOY_REF_VALUE="${DEPLOY_REF:-production}"
+          DEPLOY_REPO_PATH_VALUE="${DEPLOY_REPO_PATH:-}"
+          REPO_CANDIDATES_VALUE="/opt/backend-template|/opt/com.nlaak.backend-template|$HOME/com.nlaak.backend-template|/srv/com.nlaak.backend-template"
+
+          ssh $OPTS "${REMOTE}" \
+            "REPO_PATH_OVERRIDE=$(printf '%q' \"$DEPLOY_REPO_PATH_VALUE\") REPO_CANDIDATES=$(printf '%q' \"$REPO_CANDIDATES_VALUE\") DEPLOY_REF=$(printf '%q' \"$DEPLOY_REF_VALUE\") RESTART_ORCHESTRATOR=$(printf '%q' \"${RESTART_ORCHESTRATOR:-true}\") API_SERVICE_NAME=$(printf '%q' \"${API_SERVICE_NAME:-backend-template-api}\") WEB_SERVICE_NAME=$(printf '%q' \"${WEB_SERVICE_NAME:-backend-template-web}\") ORCHESTRATOR_SERVICE_NAME=$(printf '%q' \"${ORCHESTRATOR_SERVICE_NAME:-backend-template-orchestrator}\") API_HEALTH_URL=$(printf '%q' \"${API_HEALTH_URL:-http://127.0.0.1:8080/health}\") WEB_HEALTH_URL=$(printf '%q' \"${WEB_HEALTH_URL:-http://127.0.0.1:8081/healthz}\") bash -s" \
+            <<< "$REMOTE_DEPLOY_SCRIPT"
+
+          rm -f /tmp/deploy_key /tmp/known_hosts

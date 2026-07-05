@@ -1,0 +1,10 @@
+{
+  "name": "Backend Template Console",
+  "short_name": "Template Console",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06121a",
+  "theme_color": "#06121a",
+  "description": "Operations console for auth, admin, payment, and service controls.",
+  "icons": []
+}
