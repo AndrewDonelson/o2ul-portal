@@ -97,6 +97,7 @@ Canonical local configuration lives in `.env` and template values live in `.env.
 Key groups:
 
 - Core runtime: `APP_ENV`, `APP_ADDR`, `WEB_ADDR`, `WEB_ROOT_DIR`, `WEB_ENABLE_HTTP3`
+- Web server image optimization: `WEB_IMAGE_OPTIMIZATION_ENABLED`, `WEB_IMAGE_OPTIMIZATION_MODE`, `WEB_IMAGE_OPTIMIZATION_MANIFEST`, `WEB_IMAGE_OPTIMIZATION_TIMEOUT_SECONDS`
 - Email delivery: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM`
 - Orchestrator control: `ORCHESTRATOR_ADDR`, `ORCHESTRATOR_BACKEND`, `ORCHESTRATOR_CONTROL_TOKEN`, `ORCHESTRATOR_LOG_URL`
 - Managed lifecycle: `MANAGED_STARTUP_*`, `MANAGED_API_*`, `MANAGED_WEB_*`, `MANAGED_*_SHUTDOWN_URL`
@@ -104,6 +105,13 @@ Key groups:
 - Payments: `STRIPE_*`, `STEAM_*`
 - CI deploy secrets source values: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, `DEPLOY_SSH_KNOWN_HOSTS`
 - Optional NGINX setup controls: `NGINX_PROJECT_SLUG`, `NGINX_SERVER_NAME`, `NGINX_LISTEN_PORT`, `NGINX_CONF_NAME`
+
+Web server image optimization:
+
+- `WEB_IMAGE_OPTIMIZATION_ENABLED`: Enables or disables startup-time image optimization in `cmd/web`.
+- `WEB_IMAGE_OPTIMIZATION_MODE`: Sets optimization behavior: `off` skips, `changed` only processes files changed since the manifest, and `all` evaluates all supported images.
+- `WEB_IMAGE_OPTIMIZATION_MANIFEST`: Relative or absolute path for the changed-mode manifest file; relative paths are resolved from `WEB_ROOT_DIR`.
+- `WEB_IMAGE_OPTIMIZATION_TIMEOUT_SECONDS`: Startup timeout budget for the optimization pass; timeout/cancel logs and startup continues.
 
 Payment credential behavior:
 

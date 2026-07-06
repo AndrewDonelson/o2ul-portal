@@ -19,6 +19,10 @@ type Config struct {
 	WebTLSCertFile               string
 	WebTLSKeyFile                string
 	WebEnableHTTP3               bool
+	WebImageOptimizationEnabled  bool
+	WebImageOptimizationMode     string
+	WebImageOptimizationManifest string
+	WebImageOptimizationTimeout  int
 	OrchestratorAddr             string
 	OrchestratorBackend          string
 	ShutdownTimeoutSeconds       int
@@ -79,6 +83,10 @@ func LoadFor(component string) Config {
 		WebTLSCertFile:               env("WEB_TLS_CERT_FILE", ""),
 		WebTLSKeyFile:                env("WEB_TLS_KEY_FILE", ""),
 		WebEnableHTTP3:               envBool("WEB_ENABLE_HTTP3", true),
+		WebImageOptimizationEnabled:  envBool("WEB_IMAGE_OPTIMIZATION_ENABLED", true),
+		WebImageOptimizationMode:     env("WEB_IMAGE_OPTIMIZATION_MODE", "changed"),
+		WebImageOptimizationManifest: env("WEB_IMAGE_OPTIMIZATION_MANIFEST", ".imageopt-manifest.json"),
+		WebImageOptimizationTimeout:  envInt("WEB_IMAGE_OPTIMIZATION_TIMEOUT_SECONDS", 20),
 		OrchestratorAddr:             env("ORCHESTRATOR_ADDR", ":8090"),
 		OrchestratorBackend:          env("ORCHESTRATOR_BACKEND", "systemd"),
 		ShutdownTimeoutSeconds:       envInt("SHUTDOWN_TIMEOUT_SECONDS", 30),

@@ -17,8 +17,10 @@ import (
 	"syscall"
 	"time"
 
+	"com.nlaak.backend-template/internal/application"
 	"com.nlaak.backend-template/internal/infrastructure/config"
 	httpinfra "com.nlaak.backend-template/internal/infrastructure/http"
+	"com.nlaak.backend-template/internal/infrastructure/imageopt"
 	"com.nlaak.backend-template/internal/infrastructure/startup"
 	"github.com/quic-go/quic-go/http3"
 )
@@ -124,6 +126,33 @@ func main() {
 	startup.ConfigureProcessLogger("WEB")
 	cfg := config.LoadFor("WEB")
 	log.Printf("env source: %s", startup.EnvSourceForLog(cfg.EnvFilePath))
+	if cfg.WebImageOptimizationEnabled {
+		optCtx, optCancel := context.WithTimeout(context.Background(), time.Duration(cfg.WebImageOptimizationTimeout)*time.Second)
+		if cfg.WebImageOptimizationTimeout <= 0 {
+			optCtx, optCancel = context.WithTimeout(context.Background(), 20*time.Second)
+		}
+		defer optCancel()
+
+		var optimizer application.ImageOptimizer = imageopt.NewOptimizer()
+		res, err := optimizer.Optimize(optCtx, application.ImageOptimizationRequest{
+			RootDir:      cfg.WebRootDir,
+			Mode:         cfg.WebImageOptimizationMode,
+			ManifestPath: cfg.WebImageOptimizationManifest,
+		})
+		log.Printf("image optimization startup: configured_mode=%s effective_mode=%s manifest=%s root=%s timeout_seconds=%d", cfg.WebImageOptimizationMode, res.EffectiveMode, res.ManifestPath, cfg.WebRootDir, cfg.WebImageOptimizationTimeout)
+		if err != nil {
+			log.Printf("image optimization skipped: mode=%s root=%s err=%v", cfg.WebImageOptimizationMode, cfg.WebRootDir, err)
+		} else {
+			log.Printf("image optimization: mode=%s scanned=%d optimized=%d skipped=%d failed=%d bytes_before=%d bytes_after=%d", cfg.WebImageOptimizationMode, res.Scanned, res.Optimized, res.Skipped, res.Failed, res.BytesBefore, res.BytesAfter)
+		}
+		for _, f := range res.Files {
+			if f.Error != "" {
+				log.Printf("image optimization file: %s before %s, after %s change %s status=%s err=%s", f.Path, formatBytes(f.BytesBefore), formatBytes(f.BytesAfter), formatChangePercent(f.BytesBefore, f.BytesAfter), f.Status, f.Error)
+				continue
+			}
+			log.Printf("image optimization file: %s before %s, after %s change %s status=%s", f.Path, formatBytes(f.BytesBefore), formatBytes(f.BytesAfter), formatChangePercent(f.BytesBefore, f.BytesAfter), f.Status)
+		}
+	}
 
 	handler, err := staticHandler(cfg.WebRootDir)
 	if err != nil {
@@ -229,4 +258,22 @@ func main() {
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("server failed: %v", err)
 	}
+}
+
+func formatBytes(v int64) string {
+	if v < 1024 {
+		return fmt.Sprintf("%dB", v)
+	}
+	if v < 1024*1024 {
+		return fmt.Sprintf("%.1fKB", float64(v)/1024.0)
+	}
+	return fmt.Sprintf("%.1fMB", float64(v)/(1024.0*1024.0))
+}
+
+func formatChangePercent(before, after int64) string {
+	if before <= 0 {
+		return "0%"
+	}
+	pct := (float64(before-after) / float64(before)) * 100.0
+	return fmt.Sprintf("%.0f%%", pct)
 }

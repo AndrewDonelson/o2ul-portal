@@ -22,7 +22,7 @@ help:
 	@echo "  $(GREEN)make run-api$(NC)         - run API service (:8080 default)"
 	@echo "  $(GREEN)make run-web$(NC)         - run WEB service (:8081 default)"
 	@echo "  $(GREEN)make run-orchestrator$(NC)- run orchestrator service (:8090 default)"
-	@echo "  $(GREEN)make dev-orchestrator$(NC)- build api/web/orchestrator binaries and run orchestrator"
+	@echo "  $(GREEN)make dev-orchestrator$(NC)- build all binaries and run orchestrator"
 	@echo "  $(GREEN)make free-dev-ports$(NC) - stop listeners on 8080/9000/9100"
 	@echo "  $(GREEN)make dev-orchestrator-clean$(NC)- free dev ports, then run orchestrator stack"
 	@echo "  $(GREEN)make frontend-build$(NC)  - compile frontend TypeScript to web/dist"
@@ -59,10 +59,7 @@ run-orchestrator:
 dev-orchestrator: frontend-install
 	@$(MAKE) free-dev-ports
 	@cd $(FRONTEND_DIR) && npm run build
-	@mkdir -p bin
-	@go build -o bin/api ./cmd/api
-	@go build -o bin/web ./cmd/web
-	@go build -o bin/orchestrator ./cmd/orchestrator
+	@$(MAKE) build
 	@JWT_SECRET=$${JWT_SECRET:-local-dev-jwt-secret} MANAGED_API_COMMAND=./bin/api MANAGED_API_ARGS='--' MANAGED_WEB_COMMAND=./bin/web MANAGED_WEB_ARGS='--' ./bin/orchestrator
 
 free-dev-ports:
