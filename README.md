@@ -88,6 +88,11 @@ Then run API/WEB yourself (`make run-api`, `make run-web`) in separate terminals
 
 Open `http://localhost:8081`.
 
+Enable local TLS for WEB HTTP/3:
+
+- Run `make setup-web-tls` to generate local cert/key files and update `.env` values for `WEB_ENABLE_HTTP3`, `WEB_TLS_CERT_FILE`, and `WEB_TLS_KEY_FILE`.
+- Then run `make dev-orchestrator`.
+
 Frontend build output is written to `web/dist-app` and is served by the internal WEB server (`cmd/web`).
 
 ## Environment Variables

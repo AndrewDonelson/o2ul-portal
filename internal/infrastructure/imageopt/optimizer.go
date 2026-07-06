@@ -43,6 +43,10 @@ type manifestEntry struct {
 	SHA256  string `json:"sha256"`
 }
 
+func sameContentFingerprint(a, b manifestEntry) bool {
+	return a.Size == b.Size && a.SHA256 == b.SHA256
+}
+
 var supportedExt = map[string]struct{}{
 	".png":  {},
 	".jpg":  {},
@@ -151,19 +155,18 @@ func (o *Optimizer) Optimize(ctx context.Context, req application.ImageOptimizat
 
 		sum := sha256.Sum256(originalBytes)
 		fingerprint := manifestEntry{
-			Size:    int64(len(originalBytes)),
-			ModUnix: info.ModTime().UnixNano(),
-			SHA256:  hex.EncodeToString(sum[:]),
+			Size:   int64(len(originalBytes)),
+			SHA256: hex.EncodeToString(sum[:]),
 		}
 
 		if mode == ModeChanged {
-			if prev, ok := manifest.Entries[rel]; ok && prev == fingerprint {
+			if prev, ok := manifest.Entries[rel]; ok && sameContentFingerprint(prev, fingerprint) {
 				res.Skipped++
 				res.BytesAfter += int64(len(originalBytes))
 				fileResult.Status = "skipped"
 				fileResult.BytesAfter = int64(len(originalBytes))
 				res.Files = append(res.Files, fileResult)
-				newEntries[rel] = prev
+				newEntries[rel] = fingerprint
 				return nil
 			}
 		}
@@ -195,16 +198,10 @@ func (o *Optimizer) Optimize(ctx context.Context, req application.ImageOptimizat
 			fileResult.Status = "optimized"
 			fileResult.BytesAfter = int64(len(optimizedBytes))
 			res.Files = append(res.Files, fileResult)
-			optimizedInfo, err := os.Stat(path)
-			if err != nil {
-				newEntries[rel] = fingerprint
-				return nil
-			}
 			optimizedSum := sha256.Sum256(optimizedBytes)
 			newEntries[rel] = manifestEntry{
-				Size:    int64(len(optimizedBytes)),
-				ModUnix: optimizedInfo.ModTime().UnixNano(),
-				SHA256:  hex.EncodeToString(optimizedSum[:]),
+				Size:   int64(len(optimizedBytes)),
+				SHA256: hex.EncodeToString(optimizedSum[:]),
 			}
 			return nil
 		}

@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"com.nlaak.backend-template/internal/application"
 )
@@ -75,6 +76,56 @@ func TestOptimizer_OffModeNoOps(t *testing.T) {
 	}
 	if res.Scanned != 0 || res.Optimized != 0 || res.Skipped != 0 || res.Failed != 0 {
 		t.Fatalf("unexpected off mode result: %+v", res)
+	}
+}
+
+func TestOptimizer_ChangedModeSkipsWhenOnlyMTimeChanges(t *testing.T) {
+	root := t.TempDir()
+	imgPath := filepath.Join(root, "images", "app", "logo.png")
+	if err := os.MkdirAll(filepath.Dir(imgPath), 0o755); err != nil {
+		t.Fatalf("mkdir failed: %v", err)
+	}
+	if err := os.WriteFile(imgPath, buildNoCompressionPNG(t), 0o644); err != nil {
+		t.Fatalf("write png failed: %v", err)
+	}
+
+	opt := NewOptimizer()
+	manifestPath := filepath.Join(root, ".imageopt-manifest.json")
+
+	first, err := opt.Optimize(context.Background(), application.ImageOptimizationRequest{
+		RootDir:      root,
+		Mode:         ModeChanged,
+		ManifestPath: manifestPath,
+	})
+	if err != nil {
+		t.Fatalf("first optimize failed: %v", err)
+	}
+	if first.Optimized != 1 {
+		t.Fatalf("first optimized=%d want=1", first.Optimized)
+	}
+
+	stat, err := os.Stat(imgPath)
+	if err != nil {
+		t.Fatalf("stat failed: %v", err)
+	}
+	newMtime := stat.ModTime().Add(3 * time.Second)
+	if err := os.Chtimes(imgPath, newMtime, newMtime); err != nil {
+		t.Fatalf("chtimes failed: %v", err)
+	}
+
+	second, err := opt.Optimize(context.Background(), application.ImageOptimizationRequest{
+		RootDir:      root,
+		Mode:         ModeChanged,
+		ManifestPath: manifestPath,
+	})
+	if err != nil {
+		t.Fatalf("second optimize failed: %v", err)
+	}
+	if second.Optimized != 0 {
+		t.Fatalf("second optimized=%d want=0", second.Optimized)
+	}
+	if second.Skipped != 1 {
+		t.Fatalf("second skipped=%d want=1", second.Skipped)
 	}
 }
 
