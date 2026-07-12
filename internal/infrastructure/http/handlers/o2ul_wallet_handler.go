@@ -51,6 +51,15 @@ type walletBuildTxReq struct {
 	InputNotes []string `json:"inputNotes"`
 }
 
+type walletSignTxReq struct {
+	WalletID   string `json:"walletId"`
+	UnsignedTx []byte `json:"unsignedTx"`
+	Assertions []struct {
+		Factor  string `json:"factor"`
+		Payload string `json:"payload"`
+	} `json:"assertions"`
+}
+
 type walletSubmitTxReq struct {
 	WalletID   string `json:"walletId"`
 	UnsignedTx []byte `json:"unsignedTx"`
@@ -186,6 +195,49 @@ func (h *O2ULWalletHandler) BuildSpendTransaction(w http.ResponseWriter, r *http
 		"unsignedTx":   tx,
 		"inputCount":   len(req.InputNotes),
 		"totalOutflow": req.Amount + req.Fee,
+	})
+}
+
+func (h *O2ULWalletHandler) SignTransaction(w http.ResponseWriter, r *http.Request) {
+	claims, ok := mw.ClaimsFromContext(r.Context())
+	if !ok {
+		http.Error(w, "missing claims", http.StatusUnauthorized)
+		return
+	}
+
+	var req walletSignTxReq
+	if err := decodeJSON(w, r, &req); err != nil {
+		http.Error(w, "invalid payload", http.StatusBadRequest)
+		return
+	}
+
+	walletID := strings.TrimSpace(req.WalletID)
+	if walletID == "" {
+		walletID = claims.PlayerID
+	}
+	if walletID != claims.PlayerID {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	assertions := make([]walletguard.Assertion, 0, len(req.Assertions))
+	for _, input := range req.Assertions {
+		assertions = append(assertions, walletguard.Assertion{Factor: walletguard.Factor(input.Factor), Payload: input.Payload})
+	}
+
+	signedTx, err := h.svc.SignTransaction(walletID, req.UnsignedTx, assertions)
+	if err != nil {
+		status := http.StatusBadRequest
+		if errors.Is(err, walletguard.ErrInsufficientFactors) {
+			status = http.StatusForbidden
+		}
+		http.Error(w, err.Error(), status)
+		return
+	}
+
+	respondJSON(w, http.StatusOK, map[string]any{
+		"walletId": walletID,
+		"signedTx": signedTx,
 	})
 }
 

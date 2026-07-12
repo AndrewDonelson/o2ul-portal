@@ -139,8 +139,31 @@ func TestO2ULWalletEndpoint_FixtureRangeE2E(t *testing.T) {
 			"inputNotes": []string{player.ID + "-note-01"},
 		})
 
-		submitPayload, _ := json.Marshal(map[string]any{
+		signPayload, _ := json.Marshal(map[string]any{
 			"unsignedTx": unsignedTx,
+			"assertions": []map[string]any{{"factor": "device", "payload": "ok"}, {"factor": "passkey", "payload": "ok"}},
+		})
+		signReq := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/sign", bytes.NewReader(signPayload))
+		signReq.Header.Set("Authorization", "Bearer "+token)
+		signReq.Header.Set("Content-Type", "application/json")
+		signRR := httptest.NewRecorder()
+		router.ServeHTTP(signRR, signReq)
+		if signRR.Code != http.StatusOK {
+			t.Fatalf("expected 200, got %d body=%s", signRR.Code, signRR.Body.String())
+		}
+
+		var signOut struct {
+			SignedTx []byte `json:"signedTx"`
+		}
+		if err := json.Unmarshal(signRR.Body.Bytes(), &signOut); err != nil {
+			t.Fatalf("sign response decode failed: %v", err)
+		}
+		if len(signOut.SignedTx) == 0 {
+			t.Fatal("expected non-empty signed transaction")
+		}
+
+		submitPayload, _ := json.Marshal(map[string]any{
+			"unsignedTx": signOut.SignedTx,
 		})
 		submitReq := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/submit", bytes.NewReader(submitPayload))
 		submitReq.Header.Set("Authorization", "Bearer "+token)
@@ -171,6 +194,18 @@ func TestO2ULWalletEndpoint_FixtureRangeE2E(t *testing.T) {
 		router.ServeHTTP(statusRR, statusReq)
 		if statusRR.Code != http.StatusOK {
 			t.Fatalf("expected 200, got %d body=%s", statusRR.Code, statusRR.Body.String())
+		}
+
+		var statusOut struct {
+			Tx struct {
+				Status string `json:"status"`
+			} `json:"tx"`
+		}
+		if err := json.Unmarshal(statusRR.Body.Bytes(), &statusOut); err != nil {
+			t.Fatalf("status response decode failed: %v", err)
+		}
+		if statusOut.Tx.Status != "processing" {
+			t.Fatalf("expected processing status, got %q", statusOut.Tx.Status)
 		}
 	})
 }

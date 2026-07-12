@@ -287,6 +287,7 @@ Defaults and overrides:
 - `POST /api/v1/o2ul/wallet/spend/prove`
 - `POST /api/v1/o2ul/wallet/notes/scan`
 - `POST /api/v1/o2ul/wallet/transactions/build`
+- `POST /api/v1/o2ul/wallet/transactions/sign`
 - `POST /api/v1/o2ul/wallet/transactions/submit`
 - `POST /api/v1/o2ul/wallet/transactions/status`
 

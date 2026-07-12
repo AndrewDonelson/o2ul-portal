@@ -53,6 +53,13 @@ type WalletSpendBuild struct {
 	InputNotes []string `json:"inputNotes"`
 }
 
+type WalletSignedTransaction struct {
+	UnsignedTx []byte `json:"unsignedTx"`
+	Signature  string `json:"signature"`
+	SignedBy   string `json:"signedBy"`
+	SignedAt   string `json:"signedAt"`
+}
+
 type WalletTransaction struct {
 	TxID         string   `json:"txId"`
 	WalletID     string   `json:"walletId"`
@@ -63,6 +70,7 @@ type WalletTransaction struct {
 	Status       string   `json:"status"`
 	SubmittedAt  string   `json:"submittedAt"`
 	TotalOutflow uint64   `json:"totalOutflow"`
+	Signature    string   `json:"signature,omitempty"`
 }
 
 func NewO2ULWalletService(lightClient O2ULLightClient, prover O2ULProverClient, guard O2ULWalletGuard) (*O2ULWalletService, error) {
@@ -196,24 +204,73 @@ func (s *O2ULWalletService) BuildSpendTransaction(req WalletSpendBuild) ([]byte,
 	return payload, nil
 }
 
+func (s *O2ULWalletService) SignTransaction(walletID string, unsignedTx []byte, assertions []walletguard.Assertion) ([]byte, error) {
+	walletID = strings.TrimSpace(walletID)
+	if walletID == "" {
+		return nil, fmt.Errorf("wallet id is required")
+	}
+	if len(unsignedTx) == 0 {
+		return nil, fmt.Errorf("unsigned transaction is required")
+	}
+
+	var spend WalletSpendBuild
+	if err := json.Unmarshal(unsignedTx, &spend); err != nil {
+		return nil, fmt.Errorf("invalid unsigned transaction payload")
+	}
+	if strings.TrimSpace(spend.WalletID) != walletID {
+		return nil, fmt.Errorf("wallet id mismatch in unsigned transaction")
+	}
+
+	if err := s.guard.Authorize(walletguard.SpendIntent{
+		WalletID: walletID,
+		Amount:   spend.Amount,
+		AssetID:  spend.AssetID,
+	}, assertions); err != nil {
+		return nil, err
+	}
+
+	hash := sha256.Sum256(append(unsignedTx, []byte("|"+walletID)...))
+	signed := WalletSignedTransaction{
+		UnsignedTx: unsignedTx,
+		Signature:  "sig-" + hex.EncodeToString(hash[:16]),
+		SignedBy:   walletID,
+		SignedAt:   time.Now().UTC().Format(time.RFC3339),
+	}
+	return json.Marshal(signed)
+}
+
 func (s *O2ULWalletService) SubmitTransaction(walletID string, unsignedTx []byte) (WalletTransaction, error) {
 	walletID = strings.TrimSpace(walletID)
 	if walletID == "" {
 		return WalletTransaction{}, fmt.Errorf("wallet id is required")
 	}
 	if len(unsignedTx) == 0 {
-		return WalletTransaction{}, fmt.Errorf("unsigned transaction is required")
+		return WalletTransaction{}, fmt.Errorf("transaction payload is required")
+	}
+
+	txPayload := unsignedTx
+	signature := ""
+	var signed WalletSignedTransaction
+	if err := json.Unmarshal(unsignedTx, &signed); err == nil && len(signed.UnsignedTx) > 0 {
+		txPayload = signed.UnsignedTx
+		signature = strings.TrimSpace(signed.Signature)
+		if signature == "" {
+			return WalletTransaction{}, fmt.Errorf("signed transaction is missing signature")
+		}
+		if strings.TrimSpace(signed.SignedBy) != walletID {
+			return WalletTransaction{}, fmt.Errorf("signed transaction wallet mismatch")
+		}
 	}
 
 	var spend WalletSpendBuild
-	if err := json.Unmarshal(unsignedTx, &spend); err != nil {
+	if err := json.Unmarshal(txPayload, &spend); err != nil {
 		return WalletTransaction{}, fmt.Errorf("invalid unsigned transaction payload")
 	}
 	if strings.TrimSpace(spend.WalletID) != walletID {
 		return WalletTransaction{}, fmt.Errorf("wallet id mismatch in unsigned transaction")
 	}
 
-	txSum := sha256.Sum256(unsignedTx)
+	txSum := sha256.Sum256(txPayload)
 	txID := "tx-" + hex.EncodeToString(txSum[:12])
 	now := time.Now().UTC().Format(time.RFC3339)
 	tx := WalletTransaction{
@@ -223,9 +280,10 @@ func (s *O2ULWalletService) SubmitTransaction(walletID string, unsignedTx []byte
 		Amount:       spend.Amount,
 		Fee:          spend.Fee,
 		InputNotes:   append([]string(nil), spend.InputNotes...),
-		Status:       "submitted",
+		Status:       "processing",
 		SubmittedAt:  now,
 		TotalOutflow: spend.Amount + spend.Fee,
+		Signature:    signature,
 	}
 
 	s.mu.Lock()

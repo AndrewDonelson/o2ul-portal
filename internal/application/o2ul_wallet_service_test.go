@@ -205,7 +205,12 @@ func TestSubmitTransactionAndReadStatus(t *testing.T) {
 		t.Fatalf("BuildSpendTransaction failed: %v", err)
 	}
 
-	tx, err := svc.SubmitTransaction("w1", unsignedTx)
+	signedTx, err := svc.SignTransaction("w1", unsignedTx, []walletguard.Assertion{{Factor: walletguard.FactorDevice, Payload: "ok"}})
+	if err != nil {
+		t.Fatalf("SignTransaction failed: %v", err)
+	}
+
+	tx, err := svc.SubmitTransaction("w1", signedTx)
 	if err != nil {
 		t.Fatalf("SubmitTransaction failed: %v", err)
 	}
@@ -217,7 +222,7 @@ func TestSubmitTransactionAndReadStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetTransactionStatus failed: %v", err)
 	}
-	if got.Status != "submitted" {
+	if got.Status != "processing" {
 		t.Fatalf("unexpected status %q", got.Status)
 	}
 }
@@ -240,7 +245,12 @@ func TestSubmitTransactionMarksInputNotesSpent(t *testing.T) {
 		t.Fatalf("BuildSpendTransaction failed: %v", err)
 	}
 
-	if _, err := svc.SubmitTransaction("w1", unsignedTx); err != nil {
+	signedTx, err := svc.SignTransaction("w1", unsignedTx, []walletguard.Assertion{{Factor: walletguard.FactorDevice, Payload: "ok"}})
+	if err != nil {
+		t.Fatalf("SignTransaction failed: %v", err)
+	}
+
+	if _, err := svc.SubmitTransaction("w1", signedTx); err != nil {
 		t.Fatalf("SubmitTransaction failed: %v", err)
 	}
 
@@ -252,5 +262,29 @@ func TestSubmitTransactionMarksInputNotesSpent(t *testing.T) {
 		if note.NoteID == "w1-note-01" && note.Status != "spent" {
 			t.Fatalf("expected input note to be spent after submission, got %q", note.Status)
 		}
+	}
+}
+
+func TestSignTransactionRequiresFactors(t *testing.T) {
+	svc, err := NewO2ULWalletService(&walletLightClientFixture{}, &walletProverFixture{}, &walletGuardFixture{err: walletguard.ErrInsufficientFactors})
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+
+	unsignedTx, err := svc.BuildSpendTransaction(WalletSpendBuild{
+		WalletID:   "w1",
+		Recipient:  "recipient-1",
+		AssetID:    "o2ul",
+		Amount:     10,
+		Fee:        2,
+		InputNotes: []string{"w1-note-01"},
+	})
+	if err != nil {
+		t.Fatalf("BuildSpendTransaction failed: %v", err)
+	}
+
+	_, err = svc.SignTransaction("w1", unsignedTx, []walletguard.Assertion{{Factor: walletguard.FactorDevice, Payload: "ok"}})
+	if !errors.Is(err, walletguard.ErrInsufficientFactors) {
+		t.Fatalf("expected ErrInsufficientFactors, got %v", err)
 	}
 }
