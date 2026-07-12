@@ -403,7 +403,7 @@ func TestDefaultWalletServiceProfileParity_Contiguous19To20Success(t *testing.T)
 	}
 }
 
-func TestDefaultWalletServiceProfileParity_SingleUnsupported21(t *testing.T) {
+func TestDefaultWalletServiceProfileParity_Contiguous20To21Success(t *testing.T) {
 	profiles := []string{"ethapi-extended", "ethapi-http3-fixture"}
 	for _, profile := range profiles {
 		t.Run(profile, func(t *testing.T) {
@@ -411,7 +411,32 @@ func TestDefaultWalletServiceProfileParity_SingleUnsupported21(t *testing.T) {
 			if err != nil {
 				t.Fatalf("service init failed: %v", err)
 			}
-			_, err = svc.VerifyClientAgainstRange(t.Context(), 21, 21)
+			headers, err := svc.VerifyClientAgainstRange(t.Context(), 20, 21)
+			if err != nil {
+				t.Fatalf("VerifyClientAgainstRange failed: %v", err)
+			}
+			if len(headers) != 2 {
+				t.Fatalf("expected 2 headers, got %d", len(headers))
+			}
+			if headers[0].Number != 20 || headers[1].Number != 21 {
+				t.Fatalf("unexpected range ordering: %+v", headers)
+			}
+			if headers[1].ParentHash != headers[0].BlockHash {
+				t.Fatalf("expected 21->20 linkage, parent=%s blockHash20=%s", headers[1].ParentHash, headers[0].BlockHash)
+			}
+		})
+	}
+}
+
+func TestDefaultWalletServiceProfileParity_SingleUnsupported22(t *testing.T) {
+	profiles := []string{"ethapi-extended", "ethapi-http3-fixture"}
+	for _, profile := range profiles {
+		t.Run(profile, func(t *testing.T) {
+			svc, err := NewDefaultO2ULWalletServiceWithProfile(profile, "")
+			if err != nil {
+				t.Fatalf("service init failed: %v", err)
+			}
+			_, err = svc.VerifyClientAgainstRange(t.Context(), 22, 22)
 			if err == nil {
 				t.Fatal("expected unsupported single-header error")
 			}

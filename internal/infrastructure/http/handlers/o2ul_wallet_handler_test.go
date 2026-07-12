@@ -221,3 +221,98 @@ func TestO2ULWalletHandlerReturnsBadRequestOnLightClientError(t *testing.T) {
 		t.Fatalf("expected 400, got %d body=%s", rr.Code, rr.Body.String())
 	}
 }
+
+func TestO2ULWalletHandlerScanNotesSuccess(t *testing.T) {
+	svc, err := application.NewO2ULWalletService(
+		walletHandlerLightFixture{},
+		walletHandlerProverFixture{proof: []byte("proof")},
+		walletHandlerGuardFixture{},
+	)
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+	h := NewO2ULWalletHandler(svc)
+
+	payload, _ := json.Marshal(map[string]any{
+		"assetId":      "o2ul",
+		"includeSpent": false,
+		"limit":        2,
+	})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/notes/scan", bytes.NewReader(payload))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer token")
+	rr := httptest.NewRecorder()
+
+	protected := mw.RequireAuth(walletHandlerTokenParser{})(http.HandlerFunc(h.ScanNotes))
+	protected.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d body=%s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestO2ULWalletHandlerBuildSpendTransactionSuccess(t *testing.T) {
+	svc, err := application.NewO2ULWalletService(
+		walletHandlerLightFixture{},
+		walletHandlerProverFixture{proof: []byte("proof")},
+		walletHandlerGuardFixture{},
+	)
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+	h := NewO2ULWalletHandler(svc)
+
+	payload, _ := json.Marshal(map[string]any{
+		"assetId":    "o2ul",
+		"recipient":  "wallet-recipient-1",
+		"amount":     10,
+		"fee":        2,
+		"inputNotes": []string{"player-1-note-01"},
+	})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/build", bytes.NewReader(payload))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer token")
+	rr := httptest.NewRecorder()
+
+	protected := mw.RequireAuth(walletHandlerTokenParser{})(http.HandlerFunc(h.BuildSpendTransaction))
+	protected.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d body=%s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestO2ULWalletHandlerBuildSpendTransactionRejectsWalletMismatch(t *testing.T) {
+	svc, err := application.NewO2ULWalletService(
+		walletHandlerLightFixture{},
+		walletHandlerProverFixture{proof: []byte("proof")},
+		walletHandlerGuardFixture{},
+	)
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+	h := NewO2ULWalletHandler(svc)
+
+	payload, _ := json.Marshal(map[string]any{
+		"walletId":   "other-player",
+		"assetId":    "o2ul",
+		"recipient":  "wallet-recipient-1",
+		"amount":     10,
+		"fee":        2,
+		"inputNotes": []string{"player-1-note-01"},
+	})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/build", bytes.NewReader(payload))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer token")
+	rr := httptest.NewRecorder()
+
+	protected := mw.RequireAuth(walletHandlerTokenParser{})(http.HandlerFunc(h.BuildSpendTransaction))
+	protected.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusForbidden {
+		t.Fatalf("expected 403, got %d body=%s", rr.Code, rr.Body.String())
+	}
+}

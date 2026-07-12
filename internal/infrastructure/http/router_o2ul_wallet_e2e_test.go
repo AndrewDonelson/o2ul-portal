@@ -94,6 +94,40 @@ func TestO2ULWalletEndpoint_FixtureRangeE2E(t *testing.T) {
 			t.Fatalf("expected missing fixture error message, got body=%s", rr.Body.String())
 		}
 	})
+
+	t.Run("scan notes endpoint succeeds", func(t *testing.T) {
+		payload, _ := json.Marshal(map[string]any{
+			"assetId":      "o2ul",
+			"includeSpent": false,
+			"limit":        2,
+		})
+		req := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/notes/scan", bytes.NewReader(payload))
+		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set("Content-Type", "application/json")
+		rr := httptest.NewRecorder()
+		router.ServeHTTP(rr, req)
+		if rr.Code != http.StatusOK {
+			t.Fatalf("expected 200, got %d body=%s", rr.Code, rr.Body.String())
+		}
+	})
+
+	t.Run("build transaction endpoint succeeds", func(t *testing.T) {
+		payload, _ := json.Marshal(map[string]any{
+			"assetId":    "o2ul",
+			"recipient":  "recipient-1",
+			"amount":     10,
+			"fee":        2,
+			"inputNotes": []string{"player-wallet-note-01"},
+		})
+		req := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/build", bytes.NewReader(payload))
+		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set("Content-Type", "application/json")
+		rr := httptest.NewRecorder()
+		router.ServeHTTP(rr, req)
+		if rr.Code != http.StatusOK {
+			t.Fatalf("expected 200, got %d body=%s", rr.Code, rr.Body.String())
+		}
+	})
 }
 
 func TestO2ULWalletEndpoint_HTTP3FixtureProfileE2E(t *testing.T) {
@@ -779,7 +813,7 @@ func TestO2ULWalletEndpoint_HighRangeContiguous19To20SuccessE2E(t *testing.T) {
 	}
 }
 
-func TestO2ULWalletEndpoint_SingleUnsupported21E2E(t *testing.T) {
+func TestO2ULWalletEndpoint_Contiguous20To21E2E(t *testing.T) {
 	profiles := []string{"ethapi-extended", "ethapi-http3-fixture"}
 	for _, profile := range profiles {
 		t.Run(profile, func(t *testing.T) {
@@ -788,9 +822,9 @@ func TestO2ULWalletEndpoint_SingleUnsupported21E2E(t *testing.T) {
 			tokenSvc := NewJWTService("test-secret", time.Hour)
 			users := newO2ULUserRepoStub()
 			player := domain.Player{
-				ID:        "player-wallet-single21-" + profile,
-				Email:     "wallet-single21-" + profile + "@example.com",
-				Username:  "wallet-single21-" + profile,
+				ID:        "player-wallet-20to21-" + profile,
+				Email:     "wallet-20to21-" + profile + "@example.com",
+				Username:  "wallet-20to21-" + profile,
 				Role:      domain.RoleRegistered,
 				CreatedAt: time.Now().UTC(),
 				UpdatedAt: time.Now().UTC(),
@@ -811,8 +845,64 @@ func TestO2ULWalletEndpoint_SingleUnsupported21E2E(t *testing.T) {
 			token := issueO2ULToken(t, tokenSvc, player)
 
 			payload, _ := json.Marshal(map[string]any{
-				"headerStart": 21,
+				"headerStart": 20,
 				"headerEnd":   21,
+				"amount":      10,
+				"assetId":     "o2ul",
+				"mode":        "local",
+				"circuitId":   "spend",
+				"witness":     []byte("w"),
+				"assertions": []map[string]any{
+					{"factor": "device", "payload": "ok"},
+					{"factor": "passkey", "payload": "ok"},
+				},
+			})
+			req := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/spend/prove", bytes.NewReader(payload))
+			req.Header.Set("Authorization", "Bearer "+token)
+			req.Header.Set("Content-Type", "application/json")
+			rr := httptest.NewRecorder()
+			router.ServeHTTP(rr, req)
+			if rr.Code != http.StatusOK {
+				t.Fatalf("expected 200, got %d body=%s", rr.Code, rr.Body.String())
+			}
+		})
+	}
+}
+
+func TestO2ULWalletEndpoint_SingleUnsupported22E2E(t *testing.T) {
+	profiles := []string{"ethapi-extended", "ethapi-http3-fixture"}
+	for _, profile := range profiles {
+		t.Run(profile, func(t *testing.T) {
+			t.Setenv(application.WalletHeaderFixtureProfileEnv, profile)
+
+			tokenSvc := NewJWTService("test-secret", time.Hour)
+			users := newO2ULUserRepoStub()
+			player := domain.Player{
+				ID:        "player-wallet-single22-" + profile,
+				Email:     "wallet-single22-" + profile + "@example.com",
+				Username:  "wallet-single22-" + profile,
+				Role:      domain.RoleRegistered,
+				CreatedAt: time.Now().UTC(),
+				UpdatedAt: time.Now().UTC(),
+			}
+			users.users[player.ID] = player
+
+			walletSvc, err := application.NewDefaultO2ULWalletService()
+			if err != nil {
+				t.Fatalf("NewDefaultO2ULWalletService failed: %v", err)
+			}
+			router := BuildAPIRouter(APIOptions{
+				AuthService:       application.NewAuthService(users, tokenSvc, authEndpointLog{}),
+				PaymentService:    application.NewPaymentService(authEndpointLog{}),
+				UserRepo:          users,
+				TokenSvc:          tokenSvc,
+				O2ULWalletService: walletSvc,
+			})
+			token := issueO2ULToken(t, tokenSvc, player)
+
+			payload, _ := json.Marshal(map[string]any{
+				"headerStart": 22,
+				"headerEnd":   22,
 				"amount":      10,
 				"assetId":     "o2ul",
 				"mode":        "local",

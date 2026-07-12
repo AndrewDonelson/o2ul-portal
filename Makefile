@@ -10,7 +10,7 @@ TEST_LOG_DIR ?= tmp
 TEST_LOG_FILE ?= $(TEST_LOG_DIR)/test.log
 FRONTEND_DIR ?= web
 
-.PHONY: help tidy test test-sentinel run-api run-web run-orchestrator dev-orchestrator free-dev-ports dev-orchestrator-clean migrate-up migrate-down build frontend-install frontend-build frontend-watch lighthouse lighthouse-new-headless setup-web-tls generate-deploy-known-hosts sync-deploy-secrets setup-nginx-once verify-nginx-setup
+.PHONY: help tidy test test-sentinel run-api run-web run-orchestrator dev-orchestrator free-dev-ports dev-orchestrator-clean migrate-up migrate-down build frontend-install frontend-build frontend-watch lighthouse lighthouse-new-headless setup-web-tls generate-deploy-known-hosts sync-deploy-secrets setup-nginx-once verify-nginx-setup check-canonical-header21
 
 help:
 	@echo "$(CYAN)com.nlaak.backend-template$(NC)"
@@ -34,6 +34,7 @@ help:
 	@echo "  $(GREEN)make sync-deploy-secrets$(NC)- publish DEPLOY_* + known hosts from .env to GitHub Actions secrets"
 	@echo "  $(GREEN)make setup-nginx-once$(NC) - configure nginx reverse-proxy once from .env values"
 	@echo "  $(GREEN)make verify-nginx-setup$(NC)- print nginx routing and current project port ownership"
+	@echo "  $(GREEN)make check-canonical-header21$(NC)- scan blockchain fixtures for canonical 21->20 parent linkage and write report"
 	@echo "  $(GREEN)make migrate-up$(NC)      - apply versioned migrations"
 	@echo "  $(GREEN)make migrate-down$(NC)    - unsupported in strata-only mode (returns error)"
 	@echo "  $(GREEN)make build$(NC)           - build all binaries into bin/"
@@ -132,3 +133,6 @@ setup-nginx-once:
 
 verify-nginx-setup:
 	@bash ./scripts/verify_nginx_setup.sh
+
+check-canonical-header21:
+	@bash ./scripts/check_canonical_header21.sh

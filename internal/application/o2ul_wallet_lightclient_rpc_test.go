@@ -103,6 +103,13 @@ func TestHTTP3FixtureHeaderRPCReturnsBlockchainHeaders(t *testing.T) {
 	if h20.ParentHash != h19.BlockHash {
 		t.Fatalf("expected 20->19 parent linkage, parent=%s blockHash19=%s", h20.ParentHash, h19.BlockHash)
 	}
+	h21, err := rpc.HeaderByNumber(context.Background(), 21)
+	if err != nil {
+		t.Fatalf("HeaderByNumber(21) failed: %v", err)
+	}
+	if h21.ParentHash != h20.BlockHash {
+		t.Fatalf("expected 21->20 parent linkage, parent=%s blockHash20=%s", h21.ParentHash, h20.BlockHash)
+	}
 }
 
 func TestHTTP3HeaderRPCRejectsNonHTTPS(t *testing.T) {
@@ -121,8 +128,8 @@ func TestHTTP3FixtureHeaderRPCRejectsUnknownHeight(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected unknown header error")
 	}
-	_, err = rpc.HeaderByNumber(context.Background(), 21)
+	_, err = rpc.HeaderByNumber(context.Background(), 22)
 	if err == nil {
-		t.Fatal("expected unknown header 21 error")
+		t.Fatal("expected unknown header 22 error")
 	}
 }

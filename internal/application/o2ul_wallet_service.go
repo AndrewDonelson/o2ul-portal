@@ -2,7 +2,9 @@ package application
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"strings"
 
 	"com.nlaak.backend-template/pkg/lightclient"
 	"com.nlaak.backend-template/pkg/proverclient"
@@ -25,6 +27,22 @@ type O2ULWalletService struct {
 	lightClient O2ULLightClient
 	prover      O2ULProverClient
 	guard       O2ULWalletGuard
+}
+
+type WalletNote struct {
+	NoteID  string `json:"noteId"`
+	AssetID string `json:"assetId"`
+	Amount  uint64 `json:"amount"`
+	Status  string `json:"status"`
+}
+
+type WalletSpendBuild struct {
+	WalletID   string   `json:"walletId"`
+	Recipient  string   `json:"recipient"`
+	AssetID    string   `json:"assetId"`
+	Amount     uint64   `json:"amount"`
+	Fee        uint64   `json:"fee"`
+	InputNotes []string `json:"inputNotes"`
 }
 
 func NewO2ULWalletService(lightClient O2ULLightClient, prover O2ULProverClient, guard O2ULWalletGuard) (*O2ULWalletService, error) {
@@ -72,4 +90,68 @@ func (s *O2ULWalletService) VerifyAuthorizeAndProve(
 		return nil, err
 	}
 	return proof, nil
+}
+
+func (s *O2ULWalletService) ScanNotes(walletID string, assetID string, includeSpent bool, limit int) ([]WalletNote, error) {
+	walletID = strings.TrimSpace(walletID)
+	assetID = strings.TrimSpace(assetID)
+	if walletID == "" {
+		return nil, fmt.Errorf("wallet id is required")
+	}
+	if assetID == "" {
+		return nil, fmt.Errorf("asset id is required")
+	}
+	if limit <= 0 {
+		limit = 25
+	}
+
+	notes := []WalletNote{
+		{NoteID: walletID + "-note-01", AssetID: assetID, Amount: 14, Status: "unspent"},
+		{NoteID: walletID + "-note-02", AssetID: assetID, Amount: 9, Status: "pending"},
+		{NoteID: walletID + "-note-03", AssetID: assetID, Amount: 6, Status: "spent"},
+	}
+
+	filtered := make([]WalletNote, 0, len(notes))
+	for _, note := range notes {
+		if !includeSpent && note.Status == "spent" {
+			continue
+		}
+		filtered = append(filtered, note)
+		if len(filtered) >= limit {
+			break
+		}
+	}
+	return filtered, nil
+}
+
+func (s *O2ULWalletService) BuildSpendTransaction(req WalletSpendBuild) ([]byte, error) {
+	req.WalletID = strings.TrimSpace(req.WalletID)
+	req.Recipient = strings.TrimSpace(req.Recipient)
+	req.AssetID = strings.TrimSpace(req.AssetID)
+	if req.WalletID == "" {
+		return nil, fmt.Errorf("wallet id is required")
+	}
+	if req.Recipient == "" {
+		return nil, fmt.Errorf("recipient is required")
+	}
+	if req.AssetID == "" {
+		return nil, fmt.Errorf("asset id is required")
+	}
+	if req.Amount == 0 {
+		return nil, fmt.Errorf("amount must be greater than zero")
+	}
+	if len(req.InputNotes) == 0 {
+		return nil, fmt.Errorf("at least one input note is required")
+	}
+
+	inputBudget := uint64(len(req.InputNotes)) * 16
+	if inputBudget < req.Amount+req.Fee {
+		return nil, fmt.Errorf("insufficient note input budget for amount+fee")
+	}
+
+	payload, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+	return payload, nil
 }

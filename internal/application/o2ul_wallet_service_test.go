@@ -128,3 +128,61 @@ func TestVerifyAuthorizeAndProveStopsOnGuardFailure(t *testing.T) {
 		t.Fatalf("expected prover not called after guard failure, got %d", prover.calls)
 	}
 }
+
+func TestScanNotesFiltersSpentByDefault(t *testing.T) {
+	svc, err := NewO2ULWalletService(&walletLightClientFixture{}, &walletProverFixture{}, &walletGuardFixture{})
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+
+	notes, err := svc.ScanNotes("w1", "o2ul", false, 10)
+	if err != nil {
+		t.Fatalf("ScanNotes failed: %v", err)
+	}
+	for _, n := range notes {
+		if n.Status == "spent" {
+			t.Fatalf("did not expect spent note in default scan: %+v", n)
+		}
+	}
+}
+
+func TestBuildSpendTransactionValidatesBudget(t *testing.T) {
+	svc, err := NewO2ULWalletService(&walletLightClientFixture{}, &walletProverFixture{}, &walletGuardFixture{})
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+
+	_, err = svc.BuildSpendTransaction(WalletSpendBuild{
+		WalletID:   "w1",
+		Recipient:  "recipient-1",
+		AssetID:    "o2ul",
+		Amount:     100,
+		Fee:        1,
+		InputNotes: []string{"n1"},
+	})
+	if err == nil {
+		t.Fatal("expected insufficient budget error")
+	}
+}
+
+func TestBuildSpendTransactionSuccess(t *testing.T) {
+	svc, err := NewO2ULWalletService(&walletLightClientFixture{}, &walletProverFixture{}, &walletGuardFixture{})
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+
+	tx, err := svc.BuildSpendTransaction(WalletSpendBuild{
+		WalletID:   "w1",
+		Recipient:  "recipient-1",
+		AssetID:    "o2ul",
+		Amount:     20,
+		Fee:        4,
+		InputNotes: []string{"n1", "n2"},
+	})
+	if err != nil {
+		t.Fatalf("BuildSpendTransaction failed: %v", err)
+	}
+	if len(tx) == 0 {
+		t.Fatal("expected non-empty transaction payload")
+	}
+}

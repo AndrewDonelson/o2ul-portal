@@ -35,6 +35,22 @@ type walletSpendProveReq struct {
 	} `json:"assertions"`
 }
 
+type walletScanNotesReq struct {
+	WalletID     string `json:"walletId"`
+	AssetID      string `json:"assetId"`
+	IncludeSpent bool   `json:"includeSpent"`
+	Limit        int    `json:"limit"`
+}
+
+type walletBuildTxReq struct {
+	WalletID   string   `json:"walletId"`
+	Recipient  string   `json:"recipient"`
+	AssetID    string   `json:"assetId"`
+	Amount     uint64   `json:"amount"`
+	Fee        uint64   `json:"fee"`
+	InputNotes []string `json:"inputNotes"`
+}
+
 func (h *O2ULWalletHandler) VerifyAuthorizeAndProve(w http.ResponseWriter, r *http.Request) {
 	claims, ok := mw.ClaimsFromContext(r.Context())
 	if !ok {
@@ -83,5 +99,82 @@ func (h *O2ULWalletHandler) VerifyAuthorizeAndProve(w http.ResponseWriter, r *ht
 	respondJSON(w, http.StatusOK, map[string]any{
 		"walletId": walletID,
 		"proof":    proof,
+	})
+}
+
+func (h *O2ULWalletHandler) ScanNotes(w http.ResponseWriter, r *http.Request) {
+	claims, ok := mw.ClaimsFromContext(r.Context())
+	if !ok {
+		http.Error(w, "missing claims", http.StatusUnauthorized)
+		return
+	}
+
+	var req walletScanNotesReq
+	if err := decodeJSON(w, r, &req); err != nil {
+		http.Error(w, "invalid payload", http.StatusBadRequest)
+		return
+	}
+
+	walletID := strings.TrimSpace(req.WalletID)
+	if walletID == "" {
+		walletID = claims.PlayerID
+	}
+	if walletID != claims.PlayerID {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	notes, err := h.svc.ScanNotes(walletID, req.AssetID, req.IncludeSpent, req.Limit)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	respondJSON(w, http.StatusOK, map[string]any{
+		"walletId": walletID,
+		"notes":    notes,
+	})
+}
+
+func (h *O2ULWalletHandler) BuildSpendTransaction(w http.ResponseWriter, r *http.Request) {
+	claims, ok := mw.ClaimsFromContext(r.Context())
+	if !ok {
+		http.Error(w, "missing claims", http.StatusUnauthorized)
+		return
+	}
+
+	var req walletBuildTxReq
+	if err := decodeJSON(w, r, &req); err != nil {
+		http.Error(w, "invalid payload", http.StatusBadRequest)
+		return
+	}
+
+	walletID := strings.TrimSpace(req.WalletID)
+	if walletID == "" {
+		walletID = claims.PlayerID
+	}
+	if walletID != claims.PlayerID {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	tx, err := h.svc.BuildSpendTransaction(application.WalletSpendBuild{
+		WalletID:   walletID,
+		Recipient:  req.Recipient,
+		AssetID:    req.AssetID,
+		Amount:     req.Amount,
+		Fee:        req.Fee,
+		InputNotes: req.InputNotes,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	respondJSON(w, http.StatusOK, map[string]any{
+		"walletId":     walletID,
+		"unsignedTx":   tx,
+		"inputCount":   len(req.InputNotes),
+		"totalOutflow": req.Amount + req.Fee,
 	})
 }

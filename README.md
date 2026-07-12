@@ -136,6 +136,7 @@ O2UL wallet light-client profile behavior:
 - When `O2UL_WALLET_HEADER_FIXTURE_PROFILE=ethapi-http3-rpc`, `O2UL_WALLET_LIGHTCLIENT_RPC_URL` is required.
 - The RPC URL must be `https://...` because the HTTP/3 client enforces TLS 1.3.
 - Deploy profile matrix reference: see `docs/PRODUCTION_RUNBOOK.md` section `O2UL Wallet Light-Client Startup Profiles` for local/staging/production startup examples.
+- Canonical header-21 replacement helper: run `make check-canonical-header21` to scan blockchain fixture corpus for a parent-linked canonical `21 -> 20` candidate. Latest scan output is written to `docs/CANONICAL_HEADER21_DISCOVERY_LATEST.md`, and replacement procedure is documented in `docs/CANONICAL_HEADER21_REPLACEMENT_RUNBOOK.md`.
 
 Auth email behavior:
 
@@ -280,6 +281,12 @@ Defaults and overrides:
 
 - `POST /api/v1/payments/checkout` (auth required)
 - `POST /api/v1/payments/webhook/{provider}`
+
+### O2UL Wallet (auth required)
+
+- `POST /api/v1/o2ul/wallet/spend/prove`
+- `POST /api/v1/o2ul/wallet/notes/scan`
+- `POST /api/v1/o2ul/wallet/transactions/build`
 
 ## Notes
 

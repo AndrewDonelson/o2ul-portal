@@ -126,6 +126,8 @@ func BuildAPIRouter(opts APIOptions) http.Handler {
 
 			if opts.O2ULWalletService != nil {
 				protected.Post("/o2ul/wallet/spend/prove", o2ulWalletH.VerifyAuthorizeAndProve)
+				protected.Post("/o2ul/wallet/notes/scan", o2ulWalletH.ScanNotes)
+				protected.Post("/o2ul/wallet/transactions/build", o2ulWalletH.BuildSpendTransaction)
 			}
 
 			if opts.O2ULPresenceService != nil {

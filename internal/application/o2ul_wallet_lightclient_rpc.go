@@ -60,6 +60,9 @@ var embeddedJSONRPCHeader19 []byte
 //go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_20.json
 var embeddedJSONRPCHeader20 []byte
 
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_21.json
+var embeddedJSONRPCHeader21 []byte
+
 type rpcDoer interface {
 	Do(req *http.Request) (*http.Response, error)
 }
@@ -218,6 +221,8 @@ func (fixtureJSONRPCDoer) Do(req *http.Request) (*http.Response, error) {
 		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader19), nil
 	case "0x14":
 		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader20), nil
+	case "0x15":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader21), nil
 	default:
 		return fixtureResponse(http.StatusOK, []byte(`{"jsonrpc":"2.0","id":1,"result":null}`)), nil
 	}

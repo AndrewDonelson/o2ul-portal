@@ -1,0 +1,11 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "hash": "0x5e3cc7b9fc3aa0f8a3357629938ecc6045d5289bad0251940a9b3ce2d718d71f",
+    "number": "0x15",
+    "parentHash": "0x408d53e79c343e437c216d3e4daffa09f2ffa998dea00f2e3fa78e392fbbfdb6",
+    "stateRoot": "0x69f7640c9d0b5594765bfadd8cd48c44a79d21b772ad02e46f41c225389a673a",
+    "source": "o2ul-portal/internal/application/testdata/synthetic-contiguous-extension-21"
+  }
+}
