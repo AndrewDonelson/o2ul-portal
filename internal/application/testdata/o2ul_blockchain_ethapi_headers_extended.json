@@ -1,0 +1,23 @@
+[
+  {
+    "number": 0,
+    "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "stateRoot": "0xd883f48b83cc9c1e8389453beb4ad4e572462eec049ca4fffbe16ecefb3fe937",
+    "blockHash": "0x98e056de84de969782b238b4509b32814627ba443ea622054a79c2bc7e4d92c7",
+    "sourceFixture": "o2ul-blockchain/internal/ethapi/testdata/eth_getHeaderByNumber-number-0.json"
+  },
+  {
+    "number": 1,
+    "parentHash": "0x98e056de84de969782b238b4509b32814627ba443ea622054a79c2bc7e4d92c7",
+    "stateRoot": "0x4acfcd1a6ab9f5e62411021ecd8a749976ae50b0590e967471264b372d7ac55b",
+    "blockHash": "0xeeb5c1852740ca4bbe65b0f57baf80634ed12a2b44affe30eec3fb54437c3926",
+    "sourceFixture": "o2ul-blockchain/internal/ethapi/testdata/eth_getHeaderByNumber-number-1.json"
+  },
+  {
+    "number": 9,
+    "parentHash": "0xcd7d78eaa8b0ddbd2956fc37e1883c30df27b43e8cc9a982020310656736637c",
+    "stateRoot": "0x78b2b19ef1a0276dbbc23a875dbf60ae5d10dafa0017098473c4871abd3e7b5c",
+    "blockHash": "0xedb9ccf3a85f67c095ad48abfb0fa09d47179bb0f902078d289042d12428aca5",
+    "sourceFixture": "o2ul-blockchain/internal/ethapi/testdata/eth_getHeaderByNumber-number-latest-1.json"
+  }
+]

@@ -63,6 +63,8 @@ type Config struct {
 	SteamLoginPassword           string
 	SteamAppID                   string
 	SteamWebhookSecret           string
+	O2ULWalletHeaderProfile      string
+	O2ULWalletRPCURL             string
 }
 
 func Load() Config {
@@ -127,6 +129,8 @@ func LoadFor(component string) Config {
 		SteamLoginPassword:           os.Getenv("STEAM_LOGIN_PWD"),
 		SteamAppID:                   os.Getenv("STEAM_APP_ID"),
 		SteamWebhookSecret:           os.Getenv("STEAM_WEBHOOK_SECRET"),
+		O2ULWalletHeaderProfile:      strings.TrimSpace(os.Getenv("O2UL_WALLET_HEADER_FIXTURE_PROFILE")),
+		O2ULWalletRPCURL:             strings.TrimSpace(os.Getenv("O2UL_WALLET_LIGHTCLIENT_RPC_URL")),
 	}
 	if cfg.JWTSecret == "replace-me" {
 		if isDevelopmentEnv(cfg.AppEnv) {

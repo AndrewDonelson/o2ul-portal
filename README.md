@@ -107,6 +107,7 @@ Key groups:
 - Orchestrator control: `ORCHESTRATOR_ADDR`, `ORCHESTRATOR_BACKEND`, `ORCHESTRATOR_CONTROL_TOKEN`, `ORCHESTRATOR_LOG_URL`
 - Managed lifecycle: `MANAGED_STARTUP_*`, `MANAGED_API_*`, `MANAGED_WEB_*`, `MANAGED_*_SHUTDOWN_URL`
 - Persistence/auth: `POSTGRES_DSN`, `REDIS_ADDR`, `JWT_SECRET`, `MASTER_ADMIN_*`
+- O2UL wallet light-client: `O2UL_WALLET_HEADER_FIXTURE_PROFILE`, `O2UL_WALLET_LIGHTCLIENT_RPC_URL`
 - Payments: `STRIPE_*`, `STEAM_*`
 - CI deploy secrets source values: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, `DEPLOY_SSH_KNOWN_HOSTS`
 - Optional NGINX setup controls: `NGINX_PROJECT_SLUG`, `NGINX_SERVER_NAME`, `NGINX_LISTEN_PORT`, `NGINX_CONF_NAME`
@@ -127,6 +128,13 @@ Payment credential behavior:
 - If Steam account credentials are provided, both must be present:
 	- `STEAM_USERNAME`
 	- `STEAM_LOGIN_PWD`
+
+O2UL wallet light-client profile behavior:
+
+- `O2UL_WALLET_HEADER_FIXTURE_PROFILE` selects the header source profile.
+- Supported profiles: `ethapi-core` (default), `ethapi-extended`, `ethapi-http3-fixture`, `ethapi-http3-rpc`.
+- When `O2UL_WALLET_HEADER_FIXTURE_PROFILE=ethapi-http3-rpc`, `O2UL_WALLET_LIGHTCLIENT_RPC_URL` is required.
+- The RPC URL must be `https://...` because the HTTP/3 client enforces TLS 1.3.
 
 Auth email behavior:
 

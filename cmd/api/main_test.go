@@ -1,6 +1,11 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+
+	"com.nlaak.backend-template/internal/infrastructure/config"
+)
 
 func TestExtractPort(t *testing.T) {
 	tests := []struct {
@@ -27,5 +32,25 @@ func TestAPIOriginTag(t *testing.T) {
 	}
 	if got := apiOriginTag(""); got != "API" {
 		t.Fatalf("unexpected fallback tag: %q", got)
+	}
+}
+
+func TestNewConfiguredO2ULWalletService_DefaultProfile(t *testing.T) {
+	_, err := newConfiguredO2ULWalletService(config.Config{})
+	if err != nil {
+		t.Fatalf("newConfiguredO2ULWalletService failed: %v", err)
+	}
+}
+
+func TestNewConfiguredO2ULWalletService_RejectsNonHTTPSRPCProfile(t *testing.T) {
+	_, err := newConfiguredO2ULWalletService(config.Config{
+		O2ULWalletHeaderProfile: "ethapi-http3-rpc",
+		O2ULWalletRPCURL:        "http://rpc.invalid",
+	})
+	if err == nil {
+		t.Fatal("expected non-https endpoint rejection")
+	}
+	if !strings.Contains(strings.ToLower(err.Error()), "https") {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }

@@ -86,6 +86,10 @@ func main() {
 	o2ulPreferencesSvc := application.NewO2ULPreferencesService(o2ulPreferencesRepo)
 	o2ulAuthSyncSvc := application.NewO2ULAuthSyncService(repo, o2ulProfileRepo)
 	o2ulFilesSvc := application.NewO2ULFilesService(o2ulFilesRepo)
+	o2ulWalletSvc, err := newConfiguredO2ULWalletService(cfg)
+	if err != nil {
+		log.Fatalf("o2ul wallet service init failed: %v", err)
+	}
 	o2ulPresenceSvc := application.NewO2ULPresenceService(o2ulPresenceRepo)
 	o2ulNotificationsSvc := application.NewO2ULNotificationsService(o2ulNotificationsRepo)
 	paymentSvc := application.NewPaymentService(
@@ -171,6 +175,7 @@ func main() {
 		O2ULPreferencesService:   o2ulPreferencesSvc,
 		O2ULAuthSyncService:      o2ulAuthSyncSvc,
 		O2ULFilesService:         o2ulFilesSvc,
+		O2ULWalletService:        o2ulWalletSvc,
 		O2ULPresenceService:      o2ulPresenceSvc,
 		O2ULNotificationsService: o2ulNotificationsSvc,
 		StrataAdminSvc:           strataAdminSvc,
@@ -211,6 +216,15 @@ func apiOriginTag(addr string) string {
 		return "API"
 	}
 	return "API-" + port
+}
+
+func newConfiguredO2ULWalletService(cfg config.Config) (*application.O2ULWalletService, error) {
+	profile := strings.TrimSpace(cfg.O2ULWalletHeaderProfile)
+	if profile == "" {
+		profile = "ethapi-core"
+	}
+	log.Printf("o2ul wallet light-client profile=%s", profile)
+	return application.NewDefaultO2ULWalletServiceWithProfile(profile, cfg.O2ULWalletRPCURL)
 }
 
 func extractPort(addr string) string {

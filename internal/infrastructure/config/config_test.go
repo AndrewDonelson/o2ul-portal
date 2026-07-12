@@ -86,3 +86,18 @@ func TestFileHelpers(t *testing.T) {
 		t.Fatalf("fileExists should be false for missing file")
 	}
 }
+
+func TestLoadForReadsWalletLightClientEnv(t *testing.T) {
+	t.Setenv("APP_ENV", "development")
+	t.Setenv("JWT_SECRET", "test-secret")
+	t.Setenv("O2UL_WALLET_HEADER_FIXTURE_PROFILE", "ethapi-http3-rpc")
+	t.Setenv("O2UL_WALLET_LIGHTCLIENT_RPC_URL", "https://rpc.example.invalid")
+
+	cfg := LoadFor("API")
+	if cfg.O2ULWalletHeaderProfile != "ethapi-http3-rpc" {
+		t.Fatalf("unexpected wallet profile: %q", cfg.O2ULWalletHeaderProfile)
+	}
+	if cfg.O2ULWalletRPCURL != "https://rpc.example.invalid" {
+		t.Fatalf("unexpected wallet rpc url: %q", cfg.O2ULWalletRPCURL)
+	}
+}

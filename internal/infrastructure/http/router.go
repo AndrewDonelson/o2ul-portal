@@ -23,6 +23,7 @@ type APIOptions struct {
 	O2ULPreferencesService   *application.O2ULPreferencesService
 	O2ULAuthSyncService      *application.O2ULAuthSyncService
 	O2ULFilesService         *application.O2ULFilesService
+	O2ULWalletService        *application.O2ULWalletService
 	O2ULPresenceService      *application.O2ULPresenceService
 	O2ULNotificationsService *application.O2ULNotificationsService
 	StrataAdminSvc           application.StrataAdminService
@@ -55,6 +56,7 @@ func BuildAPIRouter(opts APIOptions) http.Handler {
 	o2ulPreferencesH := handlers.NewO2ULPreferencesHandler(opts.O2ULPreferencesService)
 	o2ulAuthSyncH := handlers.NewO2ULAuthSyncHandler(opts.O2ULAuthSyncService)
 	o2ulFilesH := handlers.NewO2ULFilesHandler(opts.O2ULFilesService)
+	o2ulWalletH := handlers.NewO2ULWalletHandler(opts.O2ULWalletService)
 	o2ulPresenceH := handlers.NewO2ULPresenceHandler(opts.O2ULPresenceService)
 	o2ulNotificationsH := handlers.NewO2ULNotificationsHandler(opts.O2ULNotificationsService)
 
@@ -120,6 +122,10 @@ func BuildAPIRouter(opts APIOptions) http.Handler {
 				protected.Get("/o2ul/files/{id}/url", o2ulFilesH.GetFileURL)
 				protected.Get("/o2ul/files/by-md5/{hash}", o2ulFilesH.GetFileByMD5)
 				protected.Delete("/o2ul/files/{id}", o2ulFilesH.RemoveFile)
+			}
+
+			if opts.O2ULWalletService != nil {
+				protected.Post("/o2ul/wallet/spend/prove", o2ulWalletH.VerifyAuthorizeAndProve)
 			}
 
 			if opts.O2ULPresenceService != nil {
