@@ -3,6 +3,9 @@ bin/
 dist/
 web/dist/
 web/dist-app/
+web/public/dist/
+web/public/dist-app/
+internal/webui/distapp/
 node_modules/
 *.out
 *.test

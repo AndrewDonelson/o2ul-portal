@@ -1,0 +1,31 @@
+<section class="wallet-console-frame">
+  <article class="wallet-console-panel-card">
+    <p class="wallet-console-eyebrow">Execution Receipt</p>
+    <h5>Spend packet staged</h5>
+    <p class="wallet-console-status">The current HTMX flow now reaches a concrete execution state. A future backend wallet engine can consume the same payload without changing the console layout.</p>
+  </article>
+
+  <div class="wallet-console-summary">
+    <article class="wallet-console-metric">
+      <span>Status</span>
+      <strong>Queued</strong>
+    </article>
+    <article class="wallet-console-metric">
+      <span>Guard approvals</span>
+      <strong>2/3</strong>
+    </article>
+    <article class="wallet-console-metric">
+      <span>Routing</span>
+      <strong>Ready</strong>
+    </article>
+  </div>
+
+  <article class="wallet-console-panel-card">
+    <p class="wallet-console-note">The action chain is now complete on the frontend side: overview → composer → confirmation → receipt. Hook the backend wallet engine into the same target to replace this receipt state with live execution.</p>
+  </article>
+
+  <div class="wallet-console-actions">
+    <button type="button" class="ui-button ui-tone-accent" hx-get="/json/wallet/send.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Edit spend packet</button>
+    <button type="button" class="ui-button" hx-get="/json/wallet/scan.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Check notes</button>
+  </div>
+</section>

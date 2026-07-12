@@ -25,7 +25,7 @@ help:
 	@echo "  $(GREEN)make dev-orchestrator$(NC)- build all binaries and run orchestrator"
 	@echo "  $(GREEN)make free-dev-ports$(NC) - stop listeners on 8080/9000/9100"
 	@echo "  $(GREEN)make dev-orchestrator-clean$(NC)- free dev ports, then run orchestrator stack"
-	@echo "  $(GREEN)make frontend-build$(NC)  - compile frontend TypeScript to web/dist"
+	@echo "  $(GREEN)make frontend-build$(NC)  - bundle frontend to web/dist-app and stage embedded assets"
 	@echo "  $(GREEN)make frontend-watch$(NC)  - watch/compile frontend TypeScript"
 	@echo "  $(GREEN)make lighthouse$(NC)      - stable Lighthouse run (writes tmp/lighthouse-stable.json)"
 	@echo "  $(GREEN)make lighthouse-new-headless$(NC) - Lighthouse run with --headless=new (can be flaky)"

@@ -1,5 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#0f2a35"/>
-  <rect x="10" y="10" width="44" height="44" rx="8" fill="#ff9f43"/>
-  <path d="M22 20h20v6H30v8h10v6H30v10h-8z" fill="#0f2a35"/>
+<svg width="100%" viewBox="0 0 690 690" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>GWF brand icon</title>
+<desc>A rounded square app icon on a deep navy-to-teal gradient background, featuring a gold shield outline containing a padlock, surrounded by a hexagonal halo of connected network nodes representing blockchain privacy and security.</desc>
+<defs>
+<linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#0a1628"/>
+<stop offset="100%" stop-color="#0f3d3e"/>
+</linearGradient>
+<linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#f4e5a1"/>
+<stop offset="100%" stop-color="#c9992e"/>
+</linearGradient>
+<radialGradient id="glow" cx="30%" cy="20%" r="70%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
+<stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+</radialGradient>
+</defs>
+<rect x="0" y="0" width="680" height="680" rx="150" fill="url(#bgGrad)"/>
+<rect x="0" y="0" width="680" height="680" rx="150" fill="url(#glow)"/>
+<g stroke="#c9992e" stroke-width="1.5" stroke-opacity="0.4" fill="none">
+<line x1="340" y1="70" x2="565" y2="200"/>
+<line x1="565" y1="200" x2="565" y2="460"/>
+<line x1="565" y1="460" x2="340" y2="590"/>
+<line x1="340" y1="590" x2="115" y2="460"/>
+<line x1="115" y1="460" x2="115" y2="200"/>
+<line x1="115" y1="200" x2="340" y2="70"/>
+</g>
+<g fill="#e8c766">
+<circle cx="340" cy="70" r="9"/>
+<circle cx="565" cy="200" r="9"/>
+<circle cx="565" cy="460" r="9"/>
+<circle cx="340" cy="590" r="9"/>
+<circle cx="115" cy="460" r="9"/>
+<circle cx="115" cy="200" r="9"/>
+</g>
+<path d="M340,180 C300,180 260,195 220,210 L220,320 C220,400 270,450 340,480 C410,450 460,400 460,320 L460,210 C420,195 380,180 340,180 Z" fill="#0a1628" stroke="url(#goldGrad)" stroke-width="7"/>
+<path d="M310,352 v-22 a30,30 0 0,1 60,0 v22" fill="none" stroke="url(#goldGrad)" stroke-width="11" stroke-linecap="round"/>
+<rect x="293" y="350" width="94" height="72" rx="13" fill="url(#goldGrad)"/>
+<circle cx="340" cy="378" r="9" fill="#0a1628"/>
+<rect x="335" y="384" width="10" height="20" fill="#0a1628"/>
 </svg>

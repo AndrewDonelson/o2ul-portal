@@ -1,10 +1,26 @@
 {
-  "name": "Backend Template Console",
-  "short_name": "Template Console",
+  "name": "GWF Portal Console",
+  "short_name": "GWF Portal",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#06121a",
   "theme_color": "#06121a",
   "description": "Operations console for auth, admin, payment, and service controls.",
-  "icons": []
+  "icons": [
+    {
+      "src": "/images/app/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/app/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/app/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }

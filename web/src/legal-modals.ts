@@ -1,4 +1,5 @@
 import { createContentCard, createCopyrightNotice, createPageHeader } from "./shared/components.js";
+import htmx from "./htmx.js";
 
 type PolicyKind = "privacy" | "terms";
 
@@ -161,6 +162,11 @@ function buildPolicyCard(doc: PolicyDocument): HTMLElement {
 }
 
 export function initLegalModals(doc: Document = document): void {
+  if (doc.body.dataset.legalModalsInitialized === "true") {
+    return;
+  }
+
+  doc.body.dataset.legalModalsInitialized = "true";
   const modal = createModalShell();
   doc.body.appendChild(modal.overlay);
 
@@ -183,14 +189,30 @@ export function initLegalModals(doc: Document = document): void {
     doc.body.classList.add("modal-open");
 
     try {
-      const response = await fetch(getPolicyUrl(kind));
-      if (!response.ok) {
-        throw new Error(`Failed to load ${kind}`);
-      }
-      const policy = (await response.json()) as PolicyDocument;
-      modal.content.innerHTML = "";
-      modal.content.appendChild(buildPolicyCard(policy));
-      modal.panel.scrollTop = 0;
+      await new Promise<void>((resolve, reject) => {
+        const request = htmx.ajax("get", getPolicyUrl(kind), {
+          source: invoker,
+          target: modal.content,
+          swap: "none",
+          handler: (_elt, responseInfo) => {
+            try {
+              if (responseInfo.xhr.status < 200 || responseInfo.xhr.status >= 300) {
+                throw new Error(`Failed to load ${kind}`);
+              }
+              const policy = JSON.parse(responseInfo.xhr.responseText) as PolicyDocument;
+              modal.content.innerHTML = "";
+              modal.content.appendChild(buildPolicyCard(policy));
+              modal.panel.scrollTop = 0;
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          },
+        });
+        if (!request) {
+          reject(new Error("HTMX AJAX request could not be started"));
+        }
+      });
     } catch {
       modal.content.innerHTML = "";
       const errorCard = createContentCard({
@@ -202,37 +224,44 @@ export function initLegalModals(doc: Document = document): void {
     }
   }
 
-  modal.closeButton.addEventListener("click", closeModal);
-  modal.overlay.addEventListener("click", (event) => {
+  htmx.on(modal.closeButton, "click", closeModal);
+  htmx.on(modal.overlay, "click", (event: Event) => {
     if (event.target === modal.overlay) {
       closeModal();
     }
   });
 
-  doc.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !modal.overlay.hidden) {
+  htmx.on(doc, "keydown", (event: Event) => {
+    const keyEvent = event as KeyboardEvent;
+    if (keyEvent.key === "Escape" && !modal.overlay.hidden) {
       closeModal();
     }
   });
 
   const triggerSelector = "[data-legal-modal], a[href='/privacy-policy'], a[href='/privacy-policy.html'], a[href='/terms-of-service'], a[href='/terms-of-service.html']";
-  const triggers = Array.from(doc.querySelectorAll<HTMLElement>(triggerSelector));
-  triggers.forEach((trigger) => {
-    trigger.addEventListener("click", (event) => {
-      let kind = trigger.getAttribute("data-legal-modal");
-      if (!kind) {
-        const href = trigger.getAttribute("href") ?? "";
-        if (href.includes("privacy-policy")) {
-          kind = "privacy";
-        } else if (href.includes("terms-of-service")) {
-          kind = "terms";
-        }
+  htmx.on(doc, "click", (event: Event) => {
+    const target = event.target instanceof Element
+      ? event.target.closest<HTMLElement>(triggerSelector)
+      : null;
+    if (!target) {
+      return;
+    }
+
+    let kind = target.getAttribute("data-legal-modal");
+    if (!kind) {
+      const href = target.getAttribute("href") ?? "";
+      if (href.includes("privacy-policy")) {
+        kind = "privacy";
+      } else if (href.includes("terms-of-service")) {
+        kind = "terms";
       }
-      if (kind !== "privacy" && kind !== "terms") {
-        return;
-      }
-      event.preventDefault();
-      void openModal(kind, trigger);
-    });
+    }
+
+    if (kind !== "privacy" && kind !== "terms") {
+      return;
+    }
+
+    event.preventDefault();
+    void openModal(kind, target);
   });
 }

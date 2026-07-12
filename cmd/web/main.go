@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	iofs "io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -22,6 +23,7 @@ import (
 	httpinfra "com.nlaak.backend-template/internal/infrastructure/http"
 	"com.nlaak.backend-template/internal/infrastructure/imageopt"
 	"com.nlaak.backend-template/internal/infrastructure/startup"
+	"com.nlaak.backend-template/internal/webui"
 	"github.com/quic-go/quic-go/http3"
 )
 
@@ -107,7 +109,7 @@ func compression(next http.Handler) http.Handler {
 	})
 }
 
-func staticHandler(root string) (http.Handler, error) {
+func staticHandlerFromDir(root string) (http.Handler, error) {
 	cleanRoot := filepath.Clean(root)
 	if _, err := os.Stat(cleanRoot); err != nil {
 		return nil, fmt.Errorf("web root unavailable: %w", err)
@@ -122,35 +124,62 @@ func staticHandler(root string) (http.Handler, error) {
 	return secureHeaders(cacheControl(compression(mux))), nil
 }
 
+func staticHandlerFromEmbedded() (http.Handler, error) {
+	embeddedRoot, err := webui.DistFS()
+	if err != nil {
+		return nil, fmt.Errorf("embedded web root unavailable: %w", err)
+	}
+	fs := http.FileServer(http.FS(embeddedRoot))
+	mux := http.NewServeMux()
+	mux.Handle("/", fs)
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
+	})
+	return secureHeaders(cacheControl(compression(mux))), nil
+}
+
+func staticHandler(root string) (http.Handler, error) {
+	trimmed := strings.TrimSpace(root)
+	if trimmed == "" || strings.EqualFold(trimmed, "embedded") {
+		return staticHandlerFromEmbedded()
+	}
+	return staticHandlerFromDir(trimmed)
+}
+
 func main() {
 	startup.ConfigureProcessLogger("WEB")
 	cfg := config.LoadFor("WEB")
 	log.Printf("env source: %s", startup.EnvSourceForLog(cfg.EnvFilePath))
 	if cfg.WebImageOptimizationEnabled {
-		optCtx, optCancel := context.WithTimeout(context.Background(), time.Duration(cfg.WebImageOptimizationTimeout)*time.Second)
-		if cfg.WebImageOptimizationTimeout <= 0 {
-			optCtx, optCancel = context.WithTimeout(context.Background(), 20*time.Second)
-		}
-		defer optCancel()
-
-		var optimizer application.ImageOptimizer = imageopt.NewOptimizer()
-		res, err := optimizer.Optimize(optCtx, application.ImageOptimizationRequest{
-			RootDir:      cfg.WebRootDir,
-			Mode:         cfg.WebImageOptimizationMode,
-			ManifestPath: cfg.WebImageOptimizationManifest,
-		})
-		log.Printf("image optimization startup: configured_mode=%s effective_mode=%s manifest=%s root=%s timeout_seconds=%d", cfg.WebImageOptimizationMode, res.EffectiveMode, res.ManifestPath, cfg.WebRootDir, cfg.WebImageOptimizationTimeout)
-		if err != nil {
-			log.Printf("image optimization skipped: mode=%s root=%s err=%v", cfg.WebImageOptimizationMode, cfg.WebRootDir, err)
+		if strings.EqualFold(strings.TrimSpace(cfg.WebRootDir), "embedded") || strings.TrimSpace(cfg.WebRootDir) == "" {
+			log.Printf("image optimization skipped: embedded web root mode")
 		} else {
-			log.Printf("image optimization: mode=%s scanned=%d optimized=%d skipped=%d failed=%d bytes_before=%d bytes_after=%d", cfg.WebImageOptimizationMode, res.Scanned, res.Optimized, res.Skipped, res.Failed, res.BytesBefore, res.BytesAfter)
-		}
-		for _, f := range res.Files {
-			if f.Error != "" {
-				log.Printf("image optimization file: %s before %s, after %s change %s status=%s err=%s", f.Path, formatBytes(f.BytesBefore), formatBytes(f.BytesAfter), formatChangePercent(f.BytesBefore, f.BytesAfter), f.Status, f.Error)
-				continue
+			optCtx, optCancel := context.WithTimeout(context.Background(), time.Duration(cfg.WebImageOptimizationTimeout)*time.Second)
+			if cfg.WebImageOptimizationTimeout <= 0 {
+				optCtx, optCancel = context.WithTimeout(context.Background(), 20*time.Second)
 			}
-			log.Printf("image optimization file: %s before %s, after %s change %s status=%s", f.Path, formatBytes(f.BytesBefore), formatBytes(f.BytesAfter), formatChangePercent(f.BytesBefore, f.BytesAfter), f.Status)
+			defer optCancel()
+
+			var optimizer application.ImageOptimizer = imageopt.NewOptimizer()
+			res, err := optimizer.Optimize(optCtx, application.ImageOptimizationRequest{
+				RootDir:      cfg.WebRootDir,
+				Mode:         cfg.WebImageOptimizationMode,
+				ManifestPath: cfg.WebImageOptimizationManifest,
+			})
+			log.Printf("image optimization startup: configured_mode=%s effective_mode=%s manifest=%s root=%s timeout_seconds=%d", cfg.WebImageOptimizationMode, res.EffectiveMode, res.ManifestPath, cfg.WebRootDir, cfg.WebImageOptimizationTimeout)
+			if err != nil {
+				log.Printf("image optimization skipped: mode=%s root=%s err=%v", cfg.WebImageOptimizationMode, cfg.WebRootDir, err)
+			} else {
+				log.Printf("image optimization: mode=%s scanned=%d optimized=%d skipped=%d failed=%d bytes_before=%d bytes_after=%d", cfg.WebImageOptimizationMode, res.Scanned, res.Optimized, res.Skipped, res.Failed, res.BytesBefore, res.BytesAfter)
+			}
+			for _, f := range res.Files {
+				if f.Error != "" {
+					log.Printf("image optimization file: %s before %s, after %s change %s status=%s err=%s", f.Path, formatBytes(f.BytesBefore), formatBytes(f.BytesAfter), formatChangePercent(f.BytesBefore, f.BytesAfter), f.Status, f.Error)
+					continue
+				}
+				log.Printf("image optimization file: %s before %s, after %s change %s status=%s", f.Path, formatBytes(f.BytesBefore), formatBytes(f.BytesAfter), formatChangePercent(f.BytesBefore, f.BytesAfter), f.Status)
+			}
 		}
 	}
 
@@ -254,7 +283,19 @@ func main() {
 		log.Printf("http/3 disabled: tls cert/key not configured")
 	}
 
-	log.Printf("started on %s root=%s", cfg.WebAddr, cfg.WebRootDir)
+	if strings.EqualFold(strings.TrimSpace(cfg.WebRootDir), "embedded") || strings.TrimSpace(cfg.WebRootDir) == "" {
+		if embeddedFS, err := webui.DistFS(); err == nil {
+			if metaBytes, metaErr := iofs.ReadFile(embeddedFS, "meta.json"); metaErr == nil {
+				log.Printf("started on %s root=embedded build_meta=%s", cfg.WebAddr, strings.TrimSpace(string(metaBytes)))
+			} else {
+				log.Printf("started on %s root=embedded", cfg.WebAddr)
+			}
+		} else {
+			log.Printf("started on %s root=embedded", cfg.WebAddr)
+		}
+	} else {
+		log.Printf("started on %s root=%s", cfg.WebAddr, cfg.WebRootDir)
+	}
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("server failed: %v", err)
 	}

@@ -1,0 +1,35 @@
+<section class="wallet-console-frame">
+  <header class="wallet-console-panel-card">
+    <p class="wallet-console-eyebrow">Note Queue</p>
+    <h5>Refresh and inspect notes</h5>
+    <p class="wallet-console-note">The scan pane keeps the wallet flow centered on note discovery and staged outputs, which makes the console useful even before the engine bridge is connected.</p>
+  </header>
+
+  <div class="wallet-console-summary">
+    <article class="wallet-console-metric">
+      <span>Incoming notes</span>
+      <strong>2</strong>
+    </article>
+    <article class="wallet-console-metric">
+      <span>Shielded notes</span>
+      <strong>1</strong>
+    </article>
+    <article class="wallet-console-metric">
+      <span>Escrow packets</span>
+      <strong>1</strong>
+    </article>
+  </div>
+
+  <article class="wallet-console-panel-card">
+    <ul class="wallet-console-note-list">
+      <li>Receive note: synced and ready.</li>
+      <li>Shielded spend: awaiting final approval.</li>
+      <li>Escrow packet: queued for guard review.</li>
+    </ul>
+  </article>
+
+  <div class="wallet-console-actions">
+    <button type="button" class="ui-button ui-tone-accent" hx-get="/json/wallet/send.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Back to composer</button>
+    <button type="button" class="ui-button" hx-get="/json/wallet/recovery.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Review recovery</button>
+  </div>
+</section>

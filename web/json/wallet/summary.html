@@ -1,0 +1,44 @@
+<section class="wallet-console-frame">
+  <header class="wallet-console-grid">
+    <article class="wallet-console-panel-card">
+      <p class="wallet-console-eyebrow">Snapshot</p>
+      <h5>Wallet Overview</h5>
+      <p class="wallet-console-note">The HTMX console loads a default summary, then lets operators drill into spend, note scan, and recovery views without a full-page reload.</p>
+    </article>
+    <article class="wallet-console-panel-card">
+      <p class="wallet-console-eyebrow">Execution State</p>
+      <h5>Live guardrail</h5>
+      <p class="wallet-console-status">Ready to stage a spend packet, refresh the note queue, or escalate a recovery flow.</p>
+    </article>
+  </header>
+
+  <div class="wallet-console-summary">
+    <article class="wallet-console-metric">
+      <span>Available balance</span>
+      <strong>12,480 O2UL</strong>
+    </article>
+    <article class="wallet-console-metric">
+      <span>Pending notes</span>
+      <strong>3</strong>
+    </article>
+    <article class="wallet-console-metric">
+      <span>Guard quorum</span>
+      <strong>2-of-3</strong>
+    </article>
+  </div>
+
+  <article class="wallet-console-panel-card">
+    <h5>Suggested next actions</h5>
+    <ul class="wallet-console-list">
+      <li>Build a spend packet and preview the execution state.</li>
+      <li>Refresh the note queue before final authorization.</li>
+      <li>Escalate recovery if a guardian needs to step in.</li>
+    </ul>
+  </article>
+
+  <div class="wallet-console-actions">
+    <button type="button" class="ui-button ui-tone-accent" hx-get="/json/wallet/send.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Build spend packet</button>
+    <button type="button" class="ui-button" hx-get="/json/wallet/scan.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Refresh note queue</button>
+    <button type="button" class="ui-button" hx-get="/json/wallet/recovery.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Open recovery</button>
+  </div>
+</section>

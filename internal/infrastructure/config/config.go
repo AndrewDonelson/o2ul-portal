@@ -81,7 +81,7 @@ func LoadFor(component string) Config {
 		AppEnv:                       env("APP_ENV", "development"),
 		AppAddr:                      env("APP_ADDR", ":8080"),
 		WebAddr:                      env("WEB_ADDR", ":8081"),
-		WebRootDir:                   env("WEB_ROOT_DIR", "./web/dist-app"),
+		WebRootDir:                   env("WEB_ROOT_DIR", "embedded"),
 		WebTLSCertFile:               env("WEB_TLS_CERT_FILE", ""),
 		WebTLSKeyFile:                env("WEB_TLS_KEY_FILE", ""),
 		WebEnableHTTP3:               envBool("WEB_ENABLE_HTTP3", true),

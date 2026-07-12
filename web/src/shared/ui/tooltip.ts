@@ -1,5 +1,5 @@
 import type { UiBaseOptions } from "./types.js";
-import { applyBaseOptions } from "./utils.js";
+import { applyBaseOptions, setHxOn } from "./utils.js";
 
 export interface TooltipOptions extends UiBaseOptions {
   text: string;
@@ -15,12 +15,8 @@ export function attachTooltip(options: TooltipOptions): HTMLElement {
   options.target.classList.add("ui-tooltip-target");
   options.target.appendChild(tip);
 
-  options.target.addEventListener("mouseenter", () => {
-    tip.hidden = false;
-  });
-  options.target.addEventListener("mouseleave", () => {
-    tip.hidden = true;
-  });
+  setHxOn(options.target, "mouseenter", "const tip = this.querySelector('.ui-tooltip'); if (tip instanceof HTMLElement) tip.hidden = false;");
+  setHxOn(options.target, "mouseleave", "const tip = this.querySelector('.ui-tooltip'); if (tip instanceof HTMLElement) tip.hidden = true;");
 
   applyBaseOptions(tip, options);
   return tip;

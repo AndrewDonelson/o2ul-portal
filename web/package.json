@@ -6,10 +6,17 @@
     "typecheck": "tsgo --noEmit",
     "build:ts": "rm -rf dist && tsc -p tsconfig.json",
     "build": "npm run typecheck && node ./build.mjs",
-    "watch": "tsc -w -p tsconfig.json"
+    "watch": "tsc -w -p tsconfig.json",
+    "test": "vitest run test/htmx-hardening.test.ts test/htmx-compat.test.ts",
+    "bench:htmx": "vitest run test/htmx-benchmark.baseline.test.ts --reporter=verbose",
+    "bench:trend": "node ./scripts/benchmark-trend.mjs",
+    "test:browser": "npm run build:ts && playwright test -c playwright.config.ts"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "@typescript/native-preview": "^7.0.0-dev.20250831.1",
-    "typescript": "^5.9.2"
+    "jsdom": "^26.1.0",
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.10"
   }
 }

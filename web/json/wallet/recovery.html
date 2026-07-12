@@ -1,0 +1,31 @@
+<section class="wallet-console-frame">
+  <header class="wallet-console-panel-card">
+    <p class="wallet-console-eyebrow">Recovery Console</p>
+    <h5>Escalate or restore wallet access</h5>
+    <p class="wallet-console-note">The recovery route keeps the same console surface while shifting from spending to guardian approvals and dispute handling.</p>
+  </header>
+
+  <div class="wallet-console-grid">
+    <article class="wallet-console-panel-card">
+      <h6>Recovery timeline</h6>
+      <div class="wallet-console-timeline">
+        <div class="wallet-console-status">1. Dispute evidence captured</div>
+        <div class="wallet-console-status">2. Guardian approvals pending</div>
+        <div class="wallet-console-status">3. Recovery batch ready</div>
+      </div>
+    </article>
+    <article class="wallet-console-panel-card">
+      <h6>Escalation state</h6>
+      <ul class="wallet-console-note-list">
+        <li>Threshold: 2-of-3 confirmations</li>
+        <li>Rotation: guarded and auditable</li>
+        <li>Execution: requires authorized handoff</li>
+      </ul>
+    </article>
+  </div>
+
+  <div class="wallet-console-actions">
+    <button type="button" class="ui-button ui-tone-accent" hx-get="/json/wallet/summary.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Return to overview</button>
+    <button type="button" class="ui-button" hx-get="/json/wallet/send.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Resume spend flow</button>
+  </div>
+</section>

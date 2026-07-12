@@ -1,9 +1,10 @@
 import type { UiBaseOptions } from "./types.js";
-import { applyBaseOptions } from "./utils.js";
+import { applyBaseOptions, dispatchCustomEventExpression, setHxOn } from "./utils.js";
 
 export interface DropdownItem {
   label: string;
-  onSelect?: () => void;
+  value?: string;
+  selectEventName?: string;
 }
 
 export interface DropdownOptions extends UiBaseOptions {
@@ -19,6 +20,7 @@ export function createDropdownMenu(options: DropdownOptions): HTMLElement {
   button.type = "button";
   button.className = "ui-dropdown-trigger";
   button.textContent = options.triggerLabel;
+  button.setAttribute("aria-expanded", "false");
 
   const menu = document.createElement("div");
   menu.className = "ui-dropdown-menu";
@@ -29,22 +31,36 @@ export function createDropdownMenu(options: DropdownOptions): HTMLElement {
     itemButton.type = "button";
     itemButton.className = "ui-dropdown-item";
     itemButton.textContent = item.label;
-    itemButton.addEventListener("click", () => {
-      menu.hidden = true;
-      item.onSelect?.();
-    });
+    itemButton.setAttribute("data-ui-dropdown-item", "true");
+    itemButton.setAttribute("data-ui-dropdown-value", item.value ?? item.label);
+    if (item.selectEventName) {
+      setHxOn(
+        itemButton,
+        "click",
+        `${dispatchCustomEventExpression(item.selectEventName, { value: item.value ?? item.label })}; const menuEl = this.closest('.ui-dropdown')?.querySelector('.ui-dropdown-menu'); if (menuEl instanceof HTMLElement) menuEl.hidden = true; const trigger = this.closest('.ui-dropdown')?.querySelector('.ui-dropdown-trigger'); if (trigger instanceof HTMLElement) trigger.setAttribute('aria-expanded', 'false');`,
+      );
+    } else {
+      setHxOn(
+        itemButton,
+        "click",
+        "const menuEl = this.closest('.ui-dropdown')?.querySelector('.ui-dropdown-menu'); if (menuEl instanceof HTMLElement) menuEl.hidden = true; const trigger = this.closest('.ui-dropdown')?.querySelector('.ui-dropdown-trigger'); if (trigger instanceof HTMLElement) trigger.setAttribute('aria-expanded', 'false');",
+      );
+    }
     menu.appendChild(itemButton);
   });
 
-  button.addEventListener("click", () => {
-    menu.hidden = !menu.hidden;
-  });
+  setHxOn(
+    button,
+    "click",
+    "const menuEl = this.nextElementSibling; if (!(menuEl instanceof HTMLElement)) return; const expanded = this.getAttribute('aria-expanded') === 'true'; this.setAttribute('aria-expanded', expanded ? 'false' : 'true'); menuEl.hidden = expanded;",
+  );
 
-  document.addEventListener("click", (event) => {
-    if (!root.contains(event.target as Node)) {
-      menu.hidden = true;
-    }
-  });
+  root.tabIndex = 0;
+  setHxOn(
+    root,
+    "focusout",
+    "const next = event.relatedTarget; if (!(next instanceof Node) || !this.contains(next)) { const menuEl = this.querySelector('.ui-dropdown-menu'); if (menuEl instanceof HTMLElement) menuEl.hidden = true; const trigger = this.querySelector('.ui-dropdown-trigger'); if (trigger instanceof HTMLElement) trigger.setAttribute('aria-expanded', 'false'); }",
+  );
 
   root.append(button, menu);
   applyBaseOptions(root, options);

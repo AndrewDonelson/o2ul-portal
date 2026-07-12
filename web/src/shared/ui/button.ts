@@ -1,12 +1,13 @@
 import type { UiBaseOptions, UiSize, UiTone } from "./types.js";
-import { applyBaseOptions, sizeClass, toneClass } from "./utils.js";
+import { applyBaseOptions, dispatchCustomEventExpression, setHxOn, sizeClass, toneClass } from "./utils.js";
 
 export interface ButtonOptions extends UiBaseOptions {
   label: string;
   tone?: UiTone;
   size?: UiSize;
   type?: "button" | "submit" | "reset";
-  onClick?: (event: MouseEvent) => void;
+  clickEventName?: string;
+  clickEventDetail?: Record<string, unknown>;
 }
 
 export function createButton(options: ButtonOptions): HTMLButtonElement {
@@ -14,7 +15,9 @@ export function createButton(options: ButtonOptions): HTMLButtonElement {
   button.type = options.type ?? "button";
   button.textContent = options.label;
   button.className = `ui-button ${sizeClass(options.size)} ${toneClass(options.tone)}`;
-  if (options.onClick) button.addEventListener("click", options.onClick);
+  if (options.clickEventName) {
+    setHxOn(button, "click", dispatchCustomEventExpression(options.clickEventName, options.clickEventDetail));
+  }
   applyBaseOptions(button, options);
   return button;
 }

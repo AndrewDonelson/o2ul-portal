@@ -1,0 +1,25 @@
+{
+  "schema": "htmx-benchmark-history-v1",
+  "entries": [
+    {
+      "timestamp": "2026-07-06T14:37:44.766Z",
+      "processMedianMs": 1604.3953490000004,
+      "mutationMedianMs": 339.44777499999964,
+      "nodeCount": 2500,
+      "mutationCount": 500,
+      "sampleCount": 3,
+      "gitSha": "local",
+      "runId": "local"
+    },
+    {
+      "timestamp": "2026-07-06T14:38:32.214Z",
+      "processMedianMs": 1669.4602020000011,
+      "mutationMedianMs": 344.359293,
+      "nodeCount": 2500,
+      "mutationCount": 500,
+      "sampleCount": 3,
+      "gitSha": "local",
+      "runId": "local"
+    }
+  ]
+}

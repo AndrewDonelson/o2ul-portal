@@ -1,0 +1,19 @@
+{
+  "benchmark": "htmx-baseline",
+  "nodeCount": 2500,
+  "mutationCount": 500,
+  "sampleCount": 3,
+  "processSamplesMs": [
+    1654.1099400000003,
+    1713.439617,
+    1669.4602020000011
+  ],
+  "mutationSamplesMs": [
+    344.359293,
+    353.60157999999956,
+    341.788043999999
+  ],
+  "processMedianMs": 1669.4602020000011,
+  "mutationMedianMs": 344.359293,
+  "timestamp": "2026-07-06T14:38:32.214Z"
+}

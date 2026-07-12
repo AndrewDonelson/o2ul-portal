@@ -1,5 +1,5 @@
 import type { UiBaseOptions } from "./types.js";
-import { applyBaseOptions } from "./utils.js";
+import { applyBaseOptions, setHxOn } from "./utils.js";
 import { createButton } from "./button.js";
 
 export interface DialogOptions extends UiBaseOptions {
@@ -29,21 +29,21 @@ export function createDialog(options: DialogOptions): HTMLElement {
   const closeButton = createButton({
     label: options.closeLabel ?? "Close",
     tone: "muted",
-    onClick: () => {
-      overlay.hidden = true;
-      document.body.classList.remove("modal-open");
-    },
   });
+  setHxOn(
+    closeButton,
+    "click",
+    "const overlay = this.closest('.ui-dialog-overlay'); if (overlay instanceof HTMLElement) overlay.hidden = true; document.body.classList.remove('modal-open');",
+  );
 
   panel.append(heading, body, closeButton);
   overlay.appendChild(panel);
 
-  overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) {
-      overlay.hidden = true;
-      document.body.classList.remove("modal-open");
-    }
-  });
+  setHxOn(
+    overlay,
+    "click",
+    "if (event.target === this) { this.hidden = true; document.body.classList.remove('modal-open'); }",
+  );
 
   applyBaseOptions(overlay, options);
   return overlay;

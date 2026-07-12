@@ -1,0 +1,40 @@
+<section class="wallet-console-frame">
+  <header class="wallet-console-panel-card">
+    <p class="wallet-console-eyebrow">Spend Builder</p>
+    <h5>Compose the transaction payload</h5>
+    <p class="wallet-console-note">This form is wired through HTMX and stages the spend flow as a first-class UI state. The backend engine can attach later without changing the page structure.</p>
+  </header>
+
+  <div class="wallet-console-grid">
+    <article class="wallet-console-panel-card">
+      <form class="wallet-console-form">
+        <label>
+          Recipient
+          <input type="text" name="recipient" placeholder="0x8b2d..." value="0x8b2d4afc9b5e1b2a0c5d4f7e9a1c3b7f8d0e4c1" />
+        </label>
+        <label>
+          Amount
+          <input type="number" name="amount" placeholder="0.00" value="125.50" />
+        </label>
+        <label>
+          Memo
+          <textarea name="memo" rows="4" placeholder="Optional spend memo">Phase 6 wallet console preview</textarea>
+        </label>
+      </form>
+    </article>
+
+    <article class="wallet-console-panel-card">
+      <h6>Spend packet preview</h6>
+      <p class="wallet-console-note">The preview mirrors the composer state and is ready to be handed off to the wallet engine when the backend bridge lands.</p>
+      <ul class="wallet-console-note-list">
+        <li>Notes selected: 2</li>
+        <li>Approval route: 2-of-3 guard</li>
+        <li>Execution path: HTMX swap-ready</li>
+      </ul>
+      <div class="wallet-console-actions">
+        <button type="button" class="ui-button ui-tone-accent" hx-get="/json/wallet/submit.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Confirm spend packet</button>
+        <button type="button" class="ui-button" hx-get="/json/wallet/summary.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Back to overview</button>
+      </div>
+    </article>
+  </div>
+</section>

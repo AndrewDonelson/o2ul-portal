@@ -1,5 +1,5 @@
 import type { UiBaseOptions } from "./types.js";
-import { applyBaseOptions } from "./utils.js";
+import { applyBaseOptions, dispatchCustomEventExpression, setHxOn } from "./utils.js";
 
 export interface FormField {
   label: string;
@@ -8,7 +8,7 @@ export interface FormField {
 
 export interface FormOptions extends UiBaseOptions {
   fields: FormField[];
-  onSubmit?: (event: SubmitEvent) => void;
+  submitEventName?: string;
 }
 
 export function createForm(options: FormOptions): HTMLFormElement {
@@ -27,10 +27,12 @@ export function createForm(options: FormOptions): HTMLFormElement {
     form.appendChild(row);
   });
 
-  if (options.onSubmit) {
-    form.addEventListener("submit", (event) => {
-      options.onSubmit?.(event as SubmitEvent);
-    });
+  if (options.submitEventName) {
+    setHxOn(
+      form,
+      "submit",
+      `event.preventDefault(); ${dispatchCustomEventExpression(options.submitEventName)};`,
+    );
   }
 
   applyBaseOptions(form, options);

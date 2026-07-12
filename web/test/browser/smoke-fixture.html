@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HTMX Browser Smoke Fixture</title>
+</head>
+<body>
+  <main id="smoke-root">
+    <div id="target">before</div>
+    <button id="smoke-btn" hx-on:click="this.setAttribute('data-fired','1')">Click</button>
+  </main>
+
+  <script type="module">
+    import htmx from "/dist/src/htmx.js";
+    window.__smokeHtmx = htmx;
+    htmx.config.allowEval = true;
+    htmx.process(document.body);
+    document.body.setAttribute("data-htmx-ready", "1");
+  </script>
+</body>
+</html>

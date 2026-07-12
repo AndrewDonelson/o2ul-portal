@@ -5,7 +5,7 @@ import { createButton } from "./button.js";
 export interface PaginationOptions extends UiBaseOptions {
   currentPage: number;
   totalPages: number;
-  onPageChange?: (page: number) => void;
+  pageChangeEventName?: string;
 }
 
 export function createPagination(options: PaginationOptions): HTMLElement {
@@ -15,10 +15,16 @@ export function createPagination(options: PaginationOptions): HTMLElement {
   const prev = createButton({
     label: "Previous",
     tone: "muted",
-    onClick: () => {
-      if (options.currentPage > 1) options.onPageChange?.(options.currentPage - 1);
+    clickEventName: options.pageChangeEventName,
+    clickEventDetail: {
+      page: Math.max(1, options.currentPage - 1),
+      direction: "previous",
     },
   });
+  if (options.currentPage <= 1) {
+    prev.disabled = true;
+    prev.setAttribute("aria-disabled", "true");
+  }
 
   const label = document.createElement("span");
   label.className = "ui-pagination-label";
@@ -27,10 +33,16 @@ export function createPagination(options: PaginationOptions): HTMLElement {
   const next = createButton({
     label: "Next",
     tone: "muted",
-    onClick: () => {
-      if (options.currentPage < options.totalPages) options.onPageChange?.(options.currentPage + 1);
+    clickEventName: options.pageChangeEventName,
+    clickEventDetail: {
+      page: Math.min(options.totalPages, options.currentPage + 1),
+      direction: "next",
     },
   });
+  if (options.currentPage >= options.totalPages) {
+    next.disabled = true;
+    next.setAttribute("aria-disabled", "true");
+  }
 
   root.append(prev, label, next);
   applyBaseOptions(root, options);

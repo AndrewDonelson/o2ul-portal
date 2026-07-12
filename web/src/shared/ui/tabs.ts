@@ -1,5 +1,5 @@
 import type { UiBaseOptions } from "./types.js";
-import { applyBaseOptions } from "./utils.js";
+import { applyBaseOptions, setHxOn } from "./utils.js";
 
 export interface TabItem {
   id: string;
@@ -23,17 +23,13 @@ export function createTabs(options: TabsOptions): HTMLElement {
   const contentWrap = document.createElement("div");
   contentWrap.className = "ui-tabs-content";
 
-  let activeId = options.initialId ?? options.tabs[0]?.id;
+  const activeId = options.initialId ?? options.tabs[0]?.id;
 
-  function render(): void {
-    contentWrap.innerHTML = "";
-    options.tabs.forEach((tab) => {
-      const selected = tab.id === activeId;
-      const button = tabList.querySelector<HTMLButtonElement>(`button[data-id=\"${tab.id}\"]`);
-      if (button) button.setAttribute("aria-selected", selected ? "true" : "false");
-      if (selected) contentWrap.appendChild(tab.content);
-    });
-  }
+  setHxOn(
+    tabList,
+    "click",
+    "const tabButton = event.target instanceof Element ? event.target.closest('button[data-id]') : null; if (!tabButton || !this.contains(tabButton)) return; const tabId = tabButton.getAttribute('data-id'); if (!tabId) return; this.querySelectorAll('button[data-id]').forEach((btn) => btn.setAttribute('aria-selected', btn === tabButton ? 'true' : 'false')); const root = this.closest('.ui-tabs'); if (!root) return; root.querySelectorAll('.ui-tabs-panel').forEach((panel) => { if (panel instanceof HTMLElement) panel.hidden = panel.getAttribute('data-id') !== tabId; });",
+  );
 
   options.tabs.forEach((tab) => {
     const button = document.createElement("button");
@@ -42,15 +38,18 @@ export function createTabs(options: TabsOptions): HTMLElement {
     button.dataset.id = tab.id;
     button.textContent = tab.label;
     button.setAttribute("role", "tab");
-    button.addEventListener("click", () => {
-      activeId = tab.id;
-      render();
-    });
+    button.setAttribute("aria-selected", tab.id === activeId ? "true" : "false");
     tabList.appendChild(button);
+
+    const panel = document.createElement("div");
+    panel.className = "ui-tabs-panel";
+    panel.setAttribute("data-id", tab.id);
+    panel.hidden = tab.id !== activeId;
+    panel.appendChild(tab.content);
+    contentWrap.appendChild(panel);
   });
 
   root.append(tabList, contentWrap);
-  render();
   applyBaseOptions(root, options);
   return root;
 }

@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#06121a" />
-  <meta name="description" content="O2UL Portal Console: technical overview of the dual-token architecture, stability mechanisms, and ecosystem components." />
-  <title>O2UL Portal Console</title>
+  <meta name="description" content="GWF Portal Console: technical overview of the dual-token architecture, stability mechanisms, and ecosystem components." />
+  <title>GWF Portal Console</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="stylesheet" href="/assets/styles.css" />
   <link rel="stylesheet" href="/assets/portal.css" />
@@ -18,9 +19,10 @@
     <section class="portal-hero">
       <div class="hero-content">
         <div class="splash-logo-wrap">
-          <img src="/images/app/O2UL-256.png" srcset="/images/app/O2UL-128-min.png 128w, /images/app/O2UL-192-min.png 192w, /images/app/O2UL-256.png 256w" sizes="240px" alt="O2UL Logo" class="splash-logo" width="240" height="240" fetchpriority="high" decoding="async" />
+          <img src="/images/app/icon-256.png" srcset="/images/app/icon-128.png 128w, /images/app/icon-192.png 192w, /images/app/icon-256.png 256w" sizes="240px" alt="GWF Brand Icon" class="splash-logo" width="240" height="240" fetchpriority="high" decoding="async" />
         </div>
-        <h1 class="hero-title">O2UL: The Dawn of Truly Universal Currency</h1>
+        <img src="/images/title-logo.svg" alt="GWF Global Wealth and Freedom" class="hero-title-logo" width="420" height="120" decoding="async" />
+        <h1 class="hero-title">Global Wealth and Freedom</h1>
         <p class="hero-subtitle">The first global financial system designed for humanity's collective prosperity, fusing blockchain innovation with cutting-edge AI analysis.</p>
         <p class="hero-tagline">Global Stability, Decentralized Freedom</p>
       </div>
@@ -264,6 +266,34 @@
       <article class="portal-panel shared-components-panel">
         <p>This live section renders all shared components and key UI primitives for rapid PWA development verification.</p>
         <div id="sharedComponentShowcase" class="shared-components-showcase"></div>
+      </article>
+
+      <h3 class="section-heading">HTMX Wallet Console</h3>
+      <article class="portal-panel wallet-console-panel">
+        <div class="wallet-console-shell">
+          <header class="wallet-console-hero">
+            <div>
+              <p class="wallet-console-eyebrow">Phase 6 Wallet Flow</p>
+              <h4>Build, scan, and recover from one HTMX surface</h4>
+            </div>
+            <div class="wallet-console-pills">
+              <span class="wallet-console-pill">Guard: 2-of-3</span>
+              <span class="wallet-console-pill">Scan queue: live</span>
+              <span class="wallet-console-pill">Execution: simulated</span>
+            </div>
+          </header>
+
+          <div class="wallet-console-toolbar" role="tablist" aria-label="Wallet console views">
+            <button type="button" class="wallet-console-tab is-active" hx-get="/json/wallet/summary.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Overview</button>
+            <button type="button" class="wallet-console-tab" hx-get="/json/wallet/send.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Send</button>
+            <button type="button" class="wallet-console-tab" hx-get="/json/wallet/scan.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Scan</button>
+            <button type="button" class="wallet-console-tab" hx-get="/json/wallet/recovery.html" hx-target="#wallet-console-body" hx-swap="innerHTML">Recovery</button>
+          </div>
+
+          <section id="wallet-console-body" class="wallet-console-body" hx-get="/json/wallet/summary.html" hx-trigger="load" hx-swap="innerHTML">
+            <div class="wallet-console-loading">Loading wallet console...</div>
+          </section>
+        </div>
       </article>
     </section>
 
