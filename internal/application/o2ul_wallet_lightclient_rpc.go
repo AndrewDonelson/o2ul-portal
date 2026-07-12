@@ -24,6 +24,42 @@ var embeddedJSONRPCHeader0 []byte
 //go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_1.json
 var embeddedJSONRPCHeader1 []byte
 
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_9.json
+var embeddedJSONRPCHeader9 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_10.json
+var embeddedJSONRPCHeader10 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_11.json
+var embeddedJSONRPCHeader11 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_12.json
+var embeddedJSONRPCHeader12 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_13.json
+var embeddedJSONRPCHeader13 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_14.json
+var embeddedJSONRPCHeader14 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_15.json
+var embeddedJSONRPCHeader15 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_16.json
+var embeddedJSONRPCHeader16 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_17.json
+var embeddedJSONRPCHeader17 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_18.json
+var embeddedJSONRPCHeader18 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_19.json
+var embeddedJSONRPCHeader19 []byte
+
+//go:embed testdata/o2ul_blockchain_ethapi_jsonrpc_header_number_20.json
+var embeddedJSONRPCHeader20 []byte
+
 type rpcDoer interface {
 	Do(req *http.Request) (*http.Response, error)
 }
@@ -112,7 +148,7 @@ func (h *http3HeaderRPC) HeaderByNumber(ctx context.Context, number uint64) (lig
 		return lightclient.Header{}, fmt.Errorf("wallet light-client rpc error %d: %s", parsed.Error.Code, parsed.Error.Message)
 	}
 	if parsed.Result == nil {
-		return lightclient.Header{}, fmt.Errorf("wallet light-client rpc returned empty header")
+		return lightclient.Header{}, fmt.Errorf("blockchain header fixture not found: number=%d", number)
 	}
 	parsedNumber, err := parseHexUint64(parsed.Result.Number)
 	if err != nil {
@@ -158,6 +194,30 @@ func (fixtureJSONRPCDoer) Do(req *http.Request) (*http.Response, error) {
 		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader0), nil
 	case "0x1":
 		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader1), nil
+	case "0x9":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader9), nil
+	case "0xa":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader10), nil
+	case "0xb":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader11), nil
+	case "0xc":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader12), nil
+	case "0xd":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader13), nil
+	case "0xe":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader14), nil
+	case "0xf":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader15), nil
+	case "0x10":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader16), nil
+	case "0x11":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader17), nil
+	case "0x12":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader18), nil
+	case "0x13":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader19), nil
+	case "0x14":
+		return fixtureResponse(http.StatusOK, embeddedJSONRPCHeader20), nil
 	default:
 		return fixtureResponse(http.StatusOK, []byte(`{"jsonrpc":"2.0","id":1,"result":null}`)), nil
 	}

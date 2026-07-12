@@ -1,0 +1,11 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "hash": "0xffa9ba0592becddd0ae8f2046c2113e0178d7bfa21b0295199971600e1347b3a",
+    "number": "0xc",
+    "parentHash": "0xf9d64ed0cca5ab49267e68de85507c548a3d0bfcdfc09f92864e8fbff245d5aa",
+    "stateRoot": "0x2803029d8c825c11e400b098d4ed7fd3f60a2ad26fa4151db891c897d03110f3",
+    "source": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  }
+}

@@ -19,5 +19,82 @@
     "stateRoot": "0x78b2b19ef1a0276dbbc23a875dbf60ae5d10dafa0017098473c4871abd3e7b5c",
     "blockHash": "0xedb9ccf3a85f67c095ad48abfb0fa09d47179bb0f902078d289042d12428aca5",
     "sourceFixture": "o2ul-blockchain/internal/ethapi/testdata/eth_getHeaderByNumber-number-latest-1.json"
+  },
+  {
+    "number": 10,
+    "parentHash": "0xedb9ccf3a85f67c095ad48abfb0fa09d47179bb0f902078d289042d12428aca5",
+    "stateRoot": "0x118f1433ae23c4d1c12f5bd652baddb72611c55ac1cd6af6620d209db222f9e6",
+    "blockHash": "0xa063415a5020f1569fae73ecb0d37bc5649ebe86d59e764a389eb37814bd42cb",
+    "sourceFixture": "o2ul-blockchain/internal/ethapi/testdata/eth_getHeaderByNumber-tag-latest.json"
+  },
+  {
+    "number": 11,
+    "parentHash": "0x59805cf3ef49399260d0be7b27aa201427b567fa58a698fd6e493fb320e3f515",
+    "stateRoot": "0x3beb76f3a5cb90fa2a6efe9bf40cd1d7543922629fe0175e52ee8d8caafdb128",
+    "blockHash": "0xf9d64ed0cca5ab49267e68de85507c548a3d0bfcdfc09f92864e8fbff245d5aa",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 12,
+    "parentHash": "0xf9d64ed0cca5ab49267e68de85507c548a3d0bfcdfc09f92864e8fbff245d5aa",
+    "stateRoot": "0x2803029d8c825c11e400b098d4ed7fd3f60a2ad26fa4151db891c897d03110f3",
+    "blockHash": "0xffa9ba0592becddd0ae8f2046c2113e0178d7bfa21b0295199971600e1347b3a",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 13,
+    "parentHash": "0xffa9ba0592becddd0ae8f2046c2113e0178d7bfa21b0295199971600e1347b3a",
+    "stateRoot": "0x75490cf55acca8134d8742277eded6c36d18894feac83df980cae63416db2b11",
+    "blockHash": "0xacb20363b58a15a8e85a0d948425e8d1a227109c2bc9ecbeca3522e1b5b0d8e6",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 14,
+    "parentHash": "0xacb20363b58a15a8e85a0d948425e8d1a227109c2bc9ecbeca3522e1b5b0d8e6",
+    "stateRoot": "0xd0f9883afb89a56c446e096faa8e2f38d5153c59a453ed862896b8660d340528",
+    "blockHash": "0xa3c8e5cde2a0f571a53520a9314cab15cd8c9d91fb46e8f70d44ffd02c8ace5d",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 15,
+    "parentHash": "0xa3c8e5cde2a0f571a53520a9314cab15cd8c9d91fb46e8f70d44ffd02c8ace5d",
+    "stateRoot": "0xd91708aa069279c13eda63d8bffe0fbba12b8482720e9696bb2da0bdcf2f7503",
+    "blockHash": "0xc37158a3394dea65fb2e04fbcdf182b18bb00a3cdc04a291e9f206ec695981e1",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 16,
+    "parentHash": "0xc37158a3394dea65fb2e04fbcdf182b18bb00a3cdc04a291e9f206ec695981e1",
+    "stateRoot": "0x14b6b6a4a8978e20c43986efa1dcfe8dcbec1197e47df3d5ee4b269cfeef486c",
+    "blockHash": "0x5bf08ef7d0f8a6fe9c16d1b7ab0e416c8878ff65d3ca31abfb7af7cb3d5356c8",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 17,
+    "parentHash": "0x5bf08ef7d0f8a6fe9c16d1b7ab0e416c8878ff65d3ca31abfb7af7cb3d5356c8",
+    "stateRoot": "0xb81e051b0cd41f3249063538d9f1b3f458b7e3251ebba7e43ebeac0c4b22fbff",
+    "blockHash": "0xcdb211b54553077d0f005232c143df63d0ab2bc45d2c476bb5ca8fe934d618ac",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 18,
+    "parentHash": "0xcdb211b54553077d0f005232c143df63d0ab2bc45d2c476bb5ca8fe934d618ac",
+    "stateRoot": "0xa1f07c82df04dcb323078eeb1129510ba4196a52051ca933579f7e2b554825c5",
+    "blockHash": "0xec372c5a9fbb13856e8071a3b8419d15a5b03f2a87f9516391cf886794e7f8dd",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 19,
+    "parentHash": "0xec372c5a9fbb13856e8071a3b8419d15a5b03f2a87f9516391cf886794e7f8dd",
+    "stateRoot": "0x820f80792e98e2fcd21ad94b0f9a18d0f2263dfdc7586bcdf4ec64eba0db9e6d",
+    "blockHash": "0x86f31501cc88a9cf34d9102c7be7de5dc1f4b0295984e417610c0b29d10593bf",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
+  },
+  {
+    "number": 20,
+    "parentHash": "0x86f31501cc88a9cf34d9102c7be7de5dc1f4b0295984e417610c0b29d10593bf",
+    "stateRoot": "0x4a6d530999a18f1302fcb4489751bcdb0d62ca6b0bfec1167220378da10a03be",
+    "blockHash": "0x408d53e79c343e437c216d3e4daffa09f2ffa998dea00f2e3fa78e392fbbfdb6",
+    "sourceFixture": "o2ul-blockchain/tests/spec-tests/fixtures/blockchain_tests/cancun/eip4788_beacon_root/beacon_root_contract/beacon_root_transition.json"
   }
 ]

@@ -135,6 +135,7 @@ O2UL wallet light-client profile behavior:
 - Supported profiles: `ethapi-core` (default), `ethapi-extended`, `ethapi-http3-fixture`, `ethapi-http3-rpc`.
 - When `O2UL_WALLET_HEADER_FIXTURE_PROFILE=ethapi-http3-rpc`, `O2UL_WALLET_LIGHTCLIENT_RPC_URL` is required.
 - The RPC URL must be `https://...` because the HTTP/3 client enforces TLS 1.3.
+- Deploy profile matrix reference: see `docs/PRODUCTION_RUNBOOK.md` section `O2UL Wallet Light-Client Startup Profiles` for local/staging/production startup examples.
 
 Auth email behavior:
 

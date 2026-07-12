@@ -14,6 +14,7 @@ import {
 import { createButton } from "./ui/button.js";
 import { createBadge } from "./ui/badge.js";
 import { createProgress } from "./ui/progress.js";
+import type { UiTone } from "./ui/types.js";
 
 function createShowcaseBlock(title: string): HTMLElement {
   const block = document.createElement("section");
@@ -89,17 +90,124 @@ export function renderSharedComponentShowcase(container: HTMLElement): void {
   cardBlock.appendChild(cardGrid);
   fragment.appendChild(cardBlock);
 
-  const sliderBlock = createShowcaseBlock("Content Slider");
+  const walletBlock = createShowcaseBlock("Wallet Shell and Flow Controls");
+  const walletGrid = document.createElement("div");
+  walletGrid.className = "shared-showcase-grid wallet-shell-grid";
+
+  const spendCard = createContentCard({
+    title: "Spend Composer",
+    align: "left",
+  });
+  const spendBody = spendCard.querySelector(".ui-card-body");
+  if (spendBody) {
+    spendBody.append(
+      createTagLine(),
+      createBadge({ label: "Ready to send", tone: "success" }),
+      createBadge({ label: "Wallet guarded", tone: "accent" }),
+    );
+
+    const spendActions = document.createElement("div");
+    spendActions.className = "shared-showcase-inline wallet-flow-actions";
+    spendActions.append(
+      createButton({ label: "Send", tone: "accent" }),
+      createButton({ label: "Receive", tone: "muted" }),
+      createButton({ label: "Escrow", tone: "muted" }),
+    );
+
+    const flowList = document.createElement("div");
+    flowList.className = "wallet-flow-list";
+    for (const [label, value] of [
+      ["Available", "12,480 O2UL"],
+      ["Pending scan", "3 notes"],
+      ["Next approval", "2-of-3"],
+    ] as const) {
+      const row = document.createElement("div");
+      row.className = "wallet-flow-item";
+      const key = document.createElement("span");
+      key.textContent = label;
+      const val = document.createElement("strong");
+      val.textContent = value;
+      row.append(key, val);
+      flowList.appendChild(row);
+    }
+
+    spendBody.append(spendActions, flowList);
+  }
+
+  const scanCard = createContentCard({
+    title: "Note Scan Queue",
+    align: "left",
+  });
+  const scanBody = scanCard.querySelector(".ui-card-body");
+  if (scanBody) {
+    const scanRows = document.createElement("div");
+    scanRows.className = "wallet-scan-list";
+    const scanQueue: Array<{ label: string; state: string; tone: UiTone }> = [
+      { label: "Receive notes", state: "Synced", tone: "success" },
+      { label: "Shielded spend", state: "Waiting", tone: "accent" },
+      { label: "Escrow packet", state: "Queued", tone: "default" },
+    ];
+    for (const scan of scanQueue) {
+      const row = document.createElement("article");
+      row.className = "wallet-scan-row";
+      const heading = document.createElement("div");
+      heading.className = "wallet-scan-heading";
+      heading.textContent = scan.label;
+      const state = createBadge({ label: scan.state, tone: scan.tone });
+      row.append(heading, state);
+      scanRows.appendChild(row);
+    }
+    scanBody.append(
+      createProgress({ value: 68 }),
+      scanRows,
+    );
+  }
+
+  const recoveryCard = createContentCard({
+    title: "Dispute and Recovery",
+    align: "left",
+  });
+  const recoveryBody = recoveryCard.querySelector(".ui-card-body");
+  if (recoveryBody) {
+    const recoveryTimeline = document.createElement("div");
+    recoveryTimeline.className = "wallet-timeline";
+    for (const step of [
+      "Dispute evidence captured",
+      "Guardian approvals pending",
+      "Recovery batch ready",
+    ]) {
+      const item = document.createElement("div");
+      item.className = "wallet-timeline-step";
+      item.textContent = step;
+      recoveryTimeline.appendChild(item);
+    }
+
+    recoveryBody.append(
+      createStatsCard({
+        title: "Safety Score",
+        value: "98%",
+        description: "Two-factor quorum and guardian confirmations are healthy.",
+      }),
+      recoveryTimeline,
+      createButton({ label: "Open recovery console", tone: "accent" }),
+    );
+  }
+
+  walletGrid.append(spendCard, scanCard, recoveryCard);
+  walletBlock.appendChild(walletGrid);
+  fragment.appendChild(walletBlock);
+
+  const sliderBlock = createShowcaseBlock("Flow Timeline");
   const slideA = document.createElement("div");
-  slideA.textContent = "Slide 1: Shared content modules power rapid PWA assembly.";
+  slideA.textContent = "Send: build the spend packet, scan notes, and route approval through the guard.";
   const slideB = document.createElement("div");
-  slideB.textContent = "Slide 2: UI primitives enforce consistent themed UX.";
+  slideB.textContent = "Receive: sync headers, refresh balances, and stage incoming note disclosures.";
   const slideC = document.createElement("div");
-  slideC.textContent = "Slide 3: Shared wrappers maximize reuse across pages.";
+  slideC.textContent = "Recovery: escalate disputes, collect guardian attestations, and restore control.";
   sliderBlock.appendChild(createContentSlider([slideA, slideB, slideC], { intervalMs: 4500 }));
   fragment.appendChild(sliderBlock);
 
-  const dataBlock = createShowcaseBlock("Charts and Table");
+  const dataBlock = createShowcaseBlock("Wallet Activity and Queue");
   const dataGrid = document.createElement("div");
   dataGrid.className = "shared-showcase-grid";
   dataGrid.append(
@@ -113,19 +221,19 @@ export function renderSharedComponentShowcase(container: HTMLElement): void {
       [
         { name: "Wallet", total: 72 },
         { name: "Portal", total: 110 },
-        { name: "Admin", total: 49 },
+        { name: "Recovery", total: 49 },
       ],
     ),
     createDataTable(
       [
-        { key: "module", label: "Module" },
-        { key: "status", label: "Status" },
-        { key: "perf", label: "Perf" },
+        { key: "module", label: "Flow" },
+        { key: "status", label: "State" },
+        { key: "perf", label: "Notes" },
       ],
       [
-        { module: "shared/ui", status: "active", perf: "fast" },
-        { module: "shared/legal", status: "active", perf: "fast" },
-        { module: "pwa-shell", status: "active", perf: "fast" },
+        { module: "send", status: "ready", perf: "guarded" },
+        { module: "receive", status: "ready", perf: "scanning" },
+        { module: "escrow", status: "armed", perf: "2-of-3" },
       ],
     ),
   );

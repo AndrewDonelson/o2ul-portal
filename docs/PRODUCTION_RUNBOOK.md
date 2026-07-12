@@ -34,6 +34,37 @@ This runbook covers production deploy, validation, incident response, and rollba
    - `GET /api/v1/auth/me` without token returns `401`/`403`
    - `GET /api/v1/admin/users` without token returns `401`/`403`
 
+## O2UL Wallet Light-Client Startup Profiles
+
+Use these settings in orchestrator-managed startup env (`.env`, systemd EnvironmentFile, or deployment secret material) to control the wallet header source profile.
+
+| Environment | `O2UL_WALLET_HEADER_FIXTURE_PROFILE` | `O2UL_WALLET_LIGHTCLIENT_RPC_URL` | Notes |
+|---|---|---|---|
+| Local development (deterministic) | `ethapi-core` | empty | Uses embedded fixture vectors only. |
+| Local HTTP/3 JSON-RPC fixture simulation | `ethapi-http3-fixture` | empty | Exercises JSON-RPC request/response path without external RPC dependency. |
+| Staging HTTP/3 | `ethapi-http3-rpc` | `https://staging-rpc.example.invalid` | Startup fails fast if URL is missing or non-HTTPS. |
+| Production HTTP/3 (pinned endpoint) | `ethapi-http3-rpc` | `https://rpc.provider.example/o2ul-mainnet` | Recommended profile for live deployment. HTTP/3 client enforces HTTPS + TLS1.3 minimum. |
+
+### Production Pinning Example
+
+```dotenv
+O2UL_WALLET_HEADER_FIXTURE_PROFILE=ethapi-http3-rpc
+O2UL_WALLET_LIGHTCLIENT_RPC_URL=https://rpc.provider.example/o2ul-mainnet
+```
+
+### Staging Pinning Example
+
+```dotenv
+O2UL_WALLET_HEADER_FIXTURE_PROFILE=ethapi-http3-rpc
+O2UL_WALLET_LIGHTCLIENT_RPC_URL=https://staging-rpc.example.invalid
+```
+
+### Guardrails
+
+1. Never use `http://` for `O2UL_WALLET_LIGHTCLIENT_RPC_URL`; startup rejects non-HTTPS for HTTP/3 profile.
+2. Keep production explicitly pinned to `ethapi-http3-rpc`; avoid fixture profiles in production.
+3. Validate effective startup profile from API logs (`o2ul wallet light-client profile=...`) after deploy.
+
 ## Post-Deploy Validation
 
 1. Auth smoke:
