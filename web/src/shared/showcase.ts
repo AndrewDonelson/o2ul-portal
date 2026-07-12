@@ -13,7 +13,9 @@ import {
 } from "./components.js";
 import { createButton } from "./ui/button.js";
 import { createBadge } from "./ui/badge.js";
+import { createInput } from "./ui/input.js";
 import { createProgress } from "./ui/progress.js";
+import { createTextarea } from "./ui/textarea.js";
 import type { UiTone } from "./ui/types.js";
 
 function createShowcaseBlock(title: string): HTMLElement {
@@ -106,6 +108,14 @@ export function renderSharedComponentShowcase(container: HTMLElement): void {
       createBadge({ label: "Wallet guarded", tone: "accent" }),
     );
 
+    const composerForm = document.createElement("div");
+    composerForm.className = "wallet-composer-form";
+    composerForm.append(
+      createInput({ name: "recipient", placeholder: "Recipient address" }),
+      createInput({ name: "amount", type: "number", placeholder: "Amount to send" }),
+      createTextarea({ name: "memo", placeholder: "Optional memo for the spend packet", rows: 3 }),
+    );
+
     const spendActions = document.createElement("div");
     spendActions.className = "shared-showcase-inline wallet-flow-actions";
     spendActions.append(
@@ -131,7 +141,7 @@ export function renderSharedComponentShowcase(container: HTMLElement): void {
       flowList.appendChild(row);
     }
 
-    spendBody.append(spendActions, flowList);
+    spendBody.append(composerForm, spendActions, flowList);
   }
 
   const scanCard = createContentCard({
@@ -140,6 +150,14 @@ export function renderSharedComponentShowcase(container: HTMLElement): void {
   });
   const scanBody = scanCard.querySelector(".ui-card-body");
   if (scanBody) {
+    const scanFilters = document.createElement("div");
+    scanFilters.className = "shared-showcase-inline wallet-scan-filters";
+    scanFilters.append(
+      createBadge({ label: "All notes", tone: "accent" }),
+      createBadge({ label: "Incoming", tone: "success" }),
+      createBadge({ label: "Escrow", tone: "muted" }),
+    );
+
     const scanRows = document.createElement("div");
     scanRows.className = "wallet-scan-list";
     const scanQueue: Array<{ label: string; state: string; tone: UiTone }> = [
@@ -158,6 +176,7 @@ export function renderSharedComponentShowcase(container: HTMLElement): void {
       scanRows.appendChild(row);
     }
     scanBody.append(
+      scanFilters,
       createProgress({ value: 68 }),
       scanRows,
     );

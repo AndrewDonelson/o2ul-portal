@@ -433,6 +433,16 @@
   margin-top: 2px;
 }
 
+.wallet-composer-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.wallet-scan-filters {
+  margin-bottom: 2px;
+}
+
 .wallet-flow-list,
 .wallet-scan-list,
 .wallet-timeline {
