@@ -186,3 +186,71 @@ func TestBuildSpendTransactionSuccess(t *testing.T) {
 		t.Fatal("expected non-empty transaction payload")
 	}
 }
+
+func TestSubmitTransactionAndReadStatus(t *testing.T) {
+	svc, err := NewO2ULWalletService(&walletLightClientFixture{}, &walletProverFixture{}, &walletGuardFixture{})
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+
+	unsignedTx, err := svc.BuildSpendTransaction(WalletSpendBuild{
+		WalletID:   "w1",
+		Recipient:  "recipient-1",
+		AssetID:    "o2ul",
+		Amount:     10,
+		Fee:        2,
+		InputNotes: []string{"w1-note-01"},
+	})
+	if err != nil {
+		t.Fatalf("BuildSpendTransaction failed: %v", err)
+	}
+
+	tx, err := svc.SubmitTransaction("w1", unsignedTx)
+	if err != nil {
+		t.Fatalf("SubmitTransaction failed: %v", err)
+	}
+	if tx.TxID == "" {
+		t.Fatal("expected non-empty tx id")
+	}
+
+	got, err := svc.GetTransactionStatus("w1", tx.TxID)
+	if err != nil {
+		t.Fatalf("GetTransactionStatus failed: %v", err)
+	}
+	if got.Status != "submitted" {
+		t.Fatalf("unexpected status %q", got.Status)
+	}
+}
+
+func TestSubmitTransactionMarksInputNotesSpent(t *testing.T) {
+	svc, err := NewO2ULWalletService(&walletLightClientFixture{}, &walletProverFixture{}, &walletGuardFixture{})
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+
+	unsignedTx, err := svc.BuildSpendTransaction(WalletSpendBuild{
+		WalletID:   "w1",
+		Recipient:  "recipient-1",
+		AssetID:    "o2ul",
+		Amount:     10,
+		Fee:        2,
+		InputNotes: []string{"w1-note-01"},
+	})
+	if err != nil {
+		t.Fatalf("BuildSpendTransaction failed: %v", err)
+	}
+
+	if _, err := svc.SubmitTransaction("w1", unsignedTx); err != nil {
+		t.Fatalf("SubmitTransaction failed: %v", err)
+	}
+
+	notes, err := svc.ScanNotes("w1", "o2ul", true, 10)
+	if err != nil {
+		t.Fatalf("ScanNotes failed: %v", err)
+	}
+	for _, note := range notes {
+		if note.NoteID == "w1-note-01" && note.Status != "spent" {
+			t.Fatalf("expected input note to be spent after submission, got %q", note.Status)
+		}
+	}
+}

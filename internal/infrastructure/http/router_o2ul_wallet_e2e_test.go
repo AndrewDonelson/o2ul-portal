@@ -128,6 +128,51 @@ func TestO2ULWalletEndpoint_FixtureRangeE2E(t *testing.T) {
 			t.Fatalf("expected 200, got %d body=%s", rr.Code, rr.Body.String())
 		}
 	})
+
+	t.Run("submit and status endpoints succeed", func(t *testing.T) {
+		unsignedTx, _ := json.Marshal(map[string]any{
+			"walletId":   player.ID,
+			"assetId":    "o2ul",
+			"recipient":  "recipient-1",
+			"amount":     10,
+			"fee":        2,
+			"inputNotes": []string{player.ID + "-note-01"},
+		})
+
+		submitPayload, _ := json.Marshal(map[string]any{
+			"unsignedTx": unsignedTx,
+		})
+		submitReq := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/submit", bytes.NewReader(submitPayload))
+		submitReq.Header.Set("Authorization", "Bearer "+token)
+		submitReq.Header.Set("Content-Type", "application/json")
+		submitRR := httptest.NewRecorder()
+		router.ServeHTTP(submitRR, submitReq)
+		if submitRR.Code != http.StatusOK {
+			t.Fatalf("expected 200, got %d body=%s", submitRR.Code, submitRR.Body.String())
+		}
+
+		var submitOut struct {
+			Tx struct {
+				TxID string `json:"txId"`
+			} `json:"tx"`
+		}
+		if err := json.Unmarshal(submitRR.Body.Bytes(), &submitOut); err != nil {
+			t.Fatalf("submit response decode failed: %v", err)
+		}
+		if submitOut.Tx.TxID == "" {
+			t.Fatal("expected non-empty tx id")
+		}
+
+		statusPayload, _ := json.Marshal(map[string]any{"txId": submitOut.Tx.TxID})
+		statusReq := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/status", bytes.NewReader(statusPayload))
+		statusReq.Header.Set("Authorization", "Bearer "+token)
+		statusReq.Header.Set("Content-Type", "application/json")
+		statusRR := httptest.NewRecorder()
+		router.ServeHTTP(statusRR, statusReq)
+		if statusRR.Code != http.StatusOK {
+			t.Fatalf("expected 200, got %d body=%s", statusRR.Code, statusRR.Body.String())
+		}
+	})
 }
 
 func TestO2ULWalletEndpoint_HTTP3FixtureProfileE2E(t *testing.T) {

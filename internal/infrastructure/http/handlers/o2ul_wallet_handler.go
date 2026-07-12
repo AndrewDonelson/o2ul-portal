@@ -51,6 +51,16 @@ type walletBuildTxReq struct {
 	InputNotes []string `json:"inputNotes"`
 }
 
+type walletSubmitTxReq struct {
+	WalletID   string `json:"walletId"`
+	UnsignedTx []byte `json:"unsignedTx"`
+}
+
+type walletTxStatusReq struct {
+	WalletID string `json:"walletId"`
+	TxID     string `json:"txId"`
+}
+
 func (h *O2ULWalletHandler) VerifyAuthorizeAndProve(w http.ResponseWriter, r *http.Request) {
 	claims, ok := mw.ClaimsFromContext(r.Context())
 	if !ok {
@@ -176,5 +186,73 @@ func (h *O2ULWalletHandler) BuildSpendTransaction(w http.ResponseWriter, r *http
 		"unsignedTx":   tx,
 		"inputCount":   len(req.InputNotes),
 		"totalOutflow": req.Amount + req.Fee,
+	})
+}
+
+func (h *O2ULWalletHandler) SubmitTransaction(w http.ResponseWriter, r *http.Request) {
+	claims, ok := mw.ClaimsFromContext(r.Context())
+	if !ok {
+		http.Error(w, "missing claims", http.StatusUnauthorized)
+		return
+	}
+
+	var req walletSubmitTxReq
+	if err := decodeJSON(w, r, &req); err != nil {
+		http.Error(w, "invalid payload", http.StatusBadRequest)
+		return
+	}
+
+	walletID := strings.TrimSpace(req.WalletID)
+	if walletID == "" {
+		walletID = claims.PlayerID
+	}
+	if walletID != claims.PlayerID {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	tx, err := h.svc.SubmitTransaction(walletID, req.UnsignedTx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	respondJSON(w, http.StatusOK, map[string]any{
+		"walletId": walletID,
+		"tx":       tx,
+	})
+}
+
+func (h *O2ULWalletHandler) TransactionStatus(w http.ResponseWriter, r *http.Request) {
+	claims, ok := mw.ClaimsFromContext(r.Context())
+	if !ok {
+		http.Error(w, "missing claims", http.StatusUnauthorized)
+		return
+	}
+
+	var req walletTxStatusReq
+	if err := decodeJSON(w, r, &req); err != nil {
+		http.Error(w, "invalid payload", http.StatusBadRequest)
+		return
+	}
+
+	walletID := strings.TrimSpace(req.WalletID)
+	if walletID == "" {
+		walletID = claims.PlayerID
+	}
+	if walletID != claims.PlayerID {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	tx, err := h.svc.GetTransactionStatus(walletID, req.TxID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	respondJSON(w, http.StatusOK, map[string]any{
+		"walletId": walletID,
+		"tx":       tx,
 	})
 }

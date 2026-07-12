@@ -316,3 +316,64 @@ func TestO2ULWalletHandlerBuildSpendTransactionRejectsWalletMismatch(t *testing.
 		t.Fatalf("expected 403, got %d body=%s", rr.Code, rr.Body.String())
 	}
 }
+
+func TestO2ULWalletHandlerSubmitAndStatusSuccess(t *testing.T) {
+	svc, err := application.NewO2ULWalletService(
+		walletHandlerLightFixture{},
+		walletHandlerProverFixture{proof: []byte("proof")},
+		walletHandlerGuardFixture{},
+	)
+	if err != nil {
+		t.Fatalf("NewO2ULWalletService failed: %v", err)
+	}
+	h := NewO2ULWalletHandler(svc)
+
+	unsignedTx, _ := json.Marshal(map[string]any{
+		"walletId":   "player-1",
+		"assetId":    "o2ul",
+		"recipient":  "recipient-1",
+		"amount":     10,
+		"fee":        2,
+		"inputNotes": []string{"player-1-note-01"},
+	})
+	submitPayload, _ := json.Marshal(map[string]any{
+		"unsignedTx": unsignedTx,
+	})
+
+	submitReq := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/submit", bytes.NewReader(submitPayload))
+	submitReq.Header.Set("Content-Type", "application/json")
+	submitReq.Header.Set("Authorization", "Bearer token")
+	submitRR := httptest.NewRecorder()
+
+	protected := mw.RequireAuth(walletHandlerTokenParser{})(http.HandlerFunc(h.SubmitTransaction))
+	protected.ServeHTTP(submitRR, submitReq)
+
+	if submitRR.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d body=%s", submitRR.Code, submitRR.Body.String())
+	}
+
+	var submitOut struct {
+		Tx struct {
+			TxID string `json:"txId"`
+		} `json:"tx"`
+	}
+	if err := json.Unmarshal(submitRR.Body.Bytes(), &submitOut); err != nil {
+		t.Fatalf("submit response decode failed: %v", err)
+	}
+	if submitOut.Tx.TxID == "" {
+		t.Fatal("expected non-empty tx id")
+	}
+
+	statusPayload, _ := json.Marshal(map[string]any{"txId": submitOut.Tx.TxID})
+	statusReq := httptest.NewRequest(http.MethodPost, "/api/v1/o2ul/wallet/transactions/status", bytes.NewReader(statusPayload))
+	statusReq.Header.Set("Content-Type", "application/json")
+	statusReq.Header.Set("Authorization", "Bearer token")
+	statusRR := httptest.NewRecorder()
+
+	protectedStatus := mw.RequireAuth(walletHandlerTokenParser{})(http.HandlerFunc(h.TransactionStatus))
+	protectedStatus.ServeHTTP(statusRR, statusReq)
+
+	if statusRR.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d body=%s", statusRR.Code, statusRR.Body.String())
+	}
+}
